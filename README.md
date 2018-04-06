@@ -3,6 +3,7 @@
 # Beverage Buddy App Starter for Vaadin 10
 :coffee::tea::sake::baby_bottle::beer::cocktail::tropical_drink::wine_glass:
 
+
 This is a Vaadin 10 Flow example Java application, used to demonstrate features of the Vaadin Flow Java framework.
 
 The Starter demonstrates the core Vaadin Flow concepts:
