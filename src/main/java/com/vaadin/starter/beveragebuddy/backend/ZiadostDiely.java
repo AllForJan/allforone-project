@@ -22,9 +22,9 @@ public class ZiadostDiely implements Serializable {
 	private String url;
 	private String ziadatel;
 	private String ico;
-	private String rok;
+	private int rok;
 	private String lokalita;
 	private String diel;
 	private String kultura;
-	private String vymera;
+	private BigDecimal vymera;
 }

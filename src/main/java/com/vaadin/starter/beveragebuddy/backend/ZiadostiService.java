@@ -1,6 +1,7 @@
 package com.vaadin.starter.beveragebuddy.backend;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,8 @@ public class ZiadostiService {
 
 		private static ZiadostiService createDemoService() {
 			final ZiadostiService service = new ZiadostiService();
+			int rok;
+			BigDecimal vymera;
 
 			try {
 				// URL;Ziadatel;ICO;Rok;Lokalita;Diel;Kultura;Vymera
@@ -41,18 +44,28 @@ public class ZiadostiService {
 						zd.setUrl(fields[0]);
 						zd.setZiadatel(fields[1]);
 						zd.setIco(fields[2]);
-						zd.setRok(fields[3]);
+						zd.setRok(Integer.parseInt(fields[3]));
 						zd.setLokalita(fields[4]);
 						zd.setDiel(fields[5]);
 						zd.setKultura(fields[6]);
-						zd.setVymera(fields[7]);
+						String strVymera = fields[7].replace(" ha","");
+						try {
+							zd.setVymera(new BigDecimal(strVymera));
+						}catch(NumberFormatException ex){
+							zd.setVymera(new BigDecimal("0.0000000000001"));
+						}
+
 
 						Ziadatel ziadatel = service.findZiadatel(zd.getIco());
 						if (ziadatel == null) {
 							ziadatel = new Ziadatel();
 							ziadatel.setIco(zd.getIco());
 							ziadatel.setZiadatel(zd.getZiadatel());
-
+							for (ZiadostDiely diely : ziadatel.getListZiadostDiely()) {
+								vymera = ziadatel.getVymera(diely.getRok());
+								vymera = vymera.add(diely.getVymera());
+								ziadatel.setVymera(diely.getRok(),vymera);
+							}
 						}
 
 						ziadatel.getListZiadostDiely().add(zd);

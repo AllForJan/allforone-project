@@ -79,7 +79,7 @@ public class ViewZiadateliaList extends VerticalLayout {
 		grid.setMultiSort(true);
 		grid.setColumnReorderingAllowed(true);
 
-		grid.addColumn(Ziadatel::getZiadatel).setHeader("Žiadataľ").setWidth("8em").setResizable(true).setKey("ziadatel")
+		grid.addColumn(Ziadatel::getZiadatel).setHeader("Žiadateľ").setWidth("8em").setResizable(true).setKey("ziadatel")
 				.setSortable(true);
 		grid.addColumn(Ziadatel::getIco).setHeader("IČO").setResizable(true).setSortable(true);
 		grid.addColumn(new ComponentRenderer<>(this::createEditButton)).setFlexGrow(0);

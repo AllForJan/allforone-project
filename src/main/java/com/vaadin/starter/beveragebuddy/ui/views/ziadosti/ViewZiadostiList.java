@@ -78,7 +78,7 @@ public class ViewZiadostiList extends VerticalLayout {
 		grid.setMultiSort(true);
 		grid.setColumnReorderingAllowed(true);
 
-		grid.addColumn(ZiadostDiely::getZiadatel).setHeader("Žiadataľ").setWidth("8em").setResizable(true)
+		grid.addColumn(ZiadostDiely::getZiadatel).setHeader("Žiadateľ").setWidth("8em").setResizable(true)
 				.setKey("ziadatel");
 		grid.addColumn(ZiadostDiely::getIco).setHeader("IČO").setResizable(true);
 		grid.addColumn(ZiadostDiely::getRok).setHeader("Rok").setResizable(true);

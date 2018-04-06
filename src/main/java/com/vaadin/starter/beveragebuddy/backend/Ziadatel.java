@@ -23,21 +23,31 @@ public class Ziadatel implements Serializable {
 	private String ziadatel;
 	private String ico;
 
-	private String rok2005;
-	private String rok2006;
-	private String rok2007;
-	private String rok2008;
-	private String rok2009;
-	private String rok2010;
-	private String rok2011;
-	private String rok2012;
-	private String rok2013;
-	private String rok2014;
-	private String rok2015;
-	private String rok2016;
-	private String rok2017;
+	private List<BigDecimal> roky;
 
-	private BigDecimal vymera;
+//	private BigDecimal rok2005;
+//	private BigDecimal rok2006;
+//	private BigDecimal rok2007;
+//	private BigDecimal rok2008;
+//	private BigDecimal rok2009;
+//	private BigDecimal rok2010;
+//	private BigDecimal rok2011;
+//	private BigDecimal rok2012;
+//	private BigDecimal rok2013;
+//	private BigDecimal rok2014;
+//	private BigDecimal rok2015;
+//	private BigDecimal rok2016;
+//	private BigDecimal rok2017;
+//
+//	private BigDecimal vymera;
 
 	private List<ZiadostDiely> listZiadostDiely = new ArrayList<>();
+
+	public BigDecimal getVymera(int rok){
+		return roky.get(rok - 2000);
+	}
+
+	public void setVymera(int rok, BigDecimal vymera){
+		roky.set(rok - 2000,vymera);
+	}
 }
