@@ -1,13 +1,7 @@
 package com.vaadin.starter.beveragebuddy.ui.views.poberatelia;
 
-import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.List;
-
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.data.renderer.TemplateRenderer;
 import org.apache.commons.lang3.StringUtils;
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
@@ -20,7 +14,6 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.starter.beveragebuddy.backend.Ziadatel;
-import com.vaadin.starter.beveragebuddy.backend.ZiadostiService;
 import com.vaadin.starter.beveragebuddy.backend.rpvs.PoberatelSumar;
 import com.vaadin.starter.beveragebuddy.backend.rpvs.RpvsService;
 import com.vaadin.starter.beveragebuddy.ui.MainLayout;
@@ -141,8 +134,8 @@ public class ViewPoberateliaList extends VerticalLayout {
 	private void createYearColumns() {
 		for (int i = from; i <= to; i++) {
 			final int rok = i;
-			grid.addColumn(ziadatel -> ziadatel.getSumaVsetkychPlatieb(rok)			
-					.setHeader(rok + "").setKey(rok + "").setWidth("3em").setResizable(true);
+			grid.addColumn(ziadatel -> ziadatel.getSumaPlatieb(rok))		
+					.setHeader("Platby "+rok).setKey(rok + "").setWidth("3em").setResizable(true);
 			
 		}
 

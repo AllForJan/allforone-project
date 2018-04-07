@@ -201,7 +201,7 @@ public class ZiadostiService {
 
 		return new ArrayList(listZiadostDiely.values());// .subList(0, 1000);
 	}
-	
+
 	public Ziadatel findZiadatel(String ico) {
 
 		return listZiadatelov.get(ico);
@@ -214,9 +214,8 @@ public class ZiadostiService {
 
 			if (rokOd >= 2004 && rokOd <= 2017 && rokDo >= 2004 && rokDo <= 2017) {
 				return listZiadatelov.values().stream()
-						.filter(ziadatel -> filterTextOf(ziadatel).contains(normalizedFilter))
-						.sorted((r1, r2) -> r2.getMaxRozdielVymer(rokOd, rokDo)
-								.compareTo(r1.getMaxRozdielVymer(rokOd, rokDo)))
+						.filter(ziadatel -> filterTextOf(ziadatel).contains(normalizedFilter)).sorted((r1, r2) -> r2
+								.getMaxRozdielVymer(rokOd, rokDo).compareTo(r1.getMaxRozdielVymer(rokOd, rokDo)))
 						.collect(Collectors.toList());
 			}
 			return new ArrayList<>();
@@ -283,12 +282,14 @@ public class ZiadostiService {
 		mena.add(ziadatel.getZiadatel());
 		mena.addAll(ziadatel.getDalsieNazvy());
 
- 		return listPriamychPlatieb.values().stream()
-				.filter(platba -> mena.contains(platba.getZiadatel())
-						&& platba.getPsc().replace(" ", "").equals(ziadatel.getFinstatData().getPsc().replace(" ", "")))
-				.sorted((r1, r2) -> r2.getId().compareTo(r1.getId())).collect(Collectors.toList());
+		return listPriamychPlatieb.values().stream()
+				.filter(platba -> mena.contains(platba.getZiadatel()) && platba.getPsc() != null
+						? platba.getPsc().equals((ziadatel.getFinstatData()!=null?ziadatel.getFinstatData().getPsc():"")): true)
+				.collect(Collectors.toList());
 
 	}
+	
+	
 
 	private void savePriamaPlatba(PriamaPlatba pp) {
 		pp.setId(nextId.incrementAndGet());
