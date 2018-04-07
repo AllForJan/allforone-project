@@ -120,10 +120,9 @@ public class ZiadostiService {
 						if (ziadatel == null) {
 							ziadatel = new Ziadatel();
 							ziadatel.setIco(zd.getIco());
-							ziadatel.setZiadatel(zd.getZiadatel());
 							ziadatel.setFinstatData(rows.get(ziadatel.getIco()));
 						}
-
+						ziadatel.setZiadatel(zd.getZiadatel());
 						ziadatel.addZiadostDiely(zd);
 
 						service.saveZiadatel(ziadatel);
@@ -281,6 +280,14 @@ public class ZiadostiService {
 		} else {
 			return new ArrayList(listPriamychPlatieb.values());
 		}
+	}
+
+	public List<PriamaPlatba> findPriamaPlatba(String name, String psc) {
+		return listPriamychPlatieb.values().stream()
+				.filter(platba -> platba.getZiadatel().contains(name)
+						&& platba.getPsc().replace(" ", "").equals(psc.replace(" ", "")))
+				.sorted((r1, r2) -> r2.getId().compareTo(r1.getId())).collect(Collectors.toList());
+
 	}
 
 	private void savePriamaPlatba(PriamaPlatba pp) {

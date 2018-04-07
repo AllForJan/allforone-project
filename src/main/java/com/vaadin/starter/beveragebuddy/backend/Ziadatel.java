@@ -25,7 +25,7 @@ public class Ziadatel implements Serializable {
 
 	private Long id;
 	private String ziadatel;
-	private List<String> dalsieNazvy = new ArrayList<>();
+	private Set<String> dalsieNazvy = new HashSet<>();
 	private String ico;
 
 	private int maxRok = -1;
@@ -39,15 +39,16 @@ public class Ziadatel implements Serializable {
 
 	private List<ZiadostDiely> listZiadostDiely = new ArrayList<>();
 
-	public void setZiadatel(String aZiadatel) {
-		if (!aZiadatel.equals(ziadatel)) {
-			dalsieNazvy.add(aZiadatel);
-		}
-		this.ziadatel = aZiadatel;
-	}
-
 	public int getLokalityZaRok(int rok) {
 		return lokality.getOrDefault(rok, new HashSet<>()).size();
+	}
+
+	public void setZiadatel(String aZiadatel) {
+		if (ziadatel == null) {
+			ziadatel = aZiadatel;
+		} else {
+			dalsieNazvy.add(aZiadatel);
+		}
 	}
 
 	public BigDecimal getVymeraZaRok(int rok) {
@@ -97,7 +98,7 @@ public class Ziadatel implements Serializable {
 		getMinRozdielVymer(rokStart, rokEnd);
 		return minRok;
 	}
-	
+
 	public int getMaxRok(int rokStart, int rokEnd) {
 		getMaxRozdielVymer(rokStart, rokEnd);
 		return maxRok;

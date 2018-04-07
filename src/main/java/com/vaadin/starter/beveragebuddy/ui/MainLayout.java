@@ -29,7 +29,6 @@ public class MainLayout extends Div implements RouterLayout,
 
     private static final String ACTIVE_ITEM_STYLE = "main-layout__nav-item--selected";
     private RouterLink categories;
-    private RouterLink reviews;
     private RouterLink ziadatelia;
     private RouterLink ziadosti;
     private RouterLink platby;
@@ -38,10 +37,6 @@ public class MainLayout extends Div implements RouterLayout,
     public MainLayout() {
         H2 title = new H2("#allforone");
         title.addClassName("main-layout__title");
-
-        reviews = new RouterLink(null, ReviewsList.class);
-        reviews.add(new Icon(VaadinIcons.LIST), new Text("Reviews"));
-        reviews.addClassName("main-layout__nav-item");
 
         categories = new RouterLink(null, CategoriesList.class);
         categories.add(new Icon(VaadinIcons.ARCHIVES), new Text("Naši ľudia"));
@@ -61,7 +56,7 @@ public class MainLayout extends Div implements RouterLayout,
         
         
         
-        Div navigation = new Div(ziadatelia, ziadosti, platby, reviews, categories);
+        Div navigation = new Div(ziadatelia, ziadosti, platby, categories);
         
         
         
@@ -78,7 +73,6 @@ public class MainLayout extends Div implements RouterLayout,
     @Override
     public void afterNavigation(AfterNavigationEvent event) {
         String segment = event.getLocation().getFirstSegment();
-        boolean reviewsActive = segment.equals(reviews.getHref());
         boolean categoriesActive = segment.equals(categories.getHref());
         boolean ziadostiActive = segment.equals(ziadosti.getHref());
         boolean ziadateliaActive = segment.equals(ziadatelia.getHref());
@@ -86,7 +80,6 @@ public class MainLayout extends Div implements RouterLayout,
 
         ziadatelia.setClassName(ACTIVE_ITEM_STYLE, ziadateliaActive);
         ziadosti.setClassName(ACTIVE_ITEM_STYLE, ziadostiActive);
-        reviews.setClassName(ACTIVE_ITEM_STYLE, reviewsActive);
         categories.setClassName(ACTIVE_ITEM_STYLE, categoriesActive);
         platby.setClassName(ACTIVE_ITEM_STYLE, platbyActive);
         
