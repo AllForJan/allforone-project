@@ -21,7 +21,7 @@ public class ZiadostDiely implements Serializable {
 	private Long id;
 	private String url;
 	private String ziadatel;
-	private String ico;
+	private int ico;
 	private int rok;
 	private String lokalita;
 	private String diel;

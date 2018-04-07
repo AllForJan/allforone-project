@@ -43,7 +43,11 @@ public class ZiadostiService {
 						ZiadostDiely zd = new ZiadostDiely();
 						zd.setUrl(fields[0]);
 						zd.setZiadatel(fields[1]);
-						zd.setIco(fields[2]);
+						if (fields[2].equals("")) {
+							zd.setIco(-1);
+						} else {
+							zd.setIco(Integer.parseInt(fields[2]));
+						}
 						zd.setRok(Integer.parseInt(fields[3]));
 						zd.setLokalita(fields[4]);
 						zd.setDiel(fields[5]);
@@ -66,13 +70,6 @@ public class ZiadostiService {
 
 						service.saveZiadatel(ziadatel);
 						service.saveZiadostDiely(zd);
-//						for (ZiadostDiely diely : ziadatel.getListZiadostDiely()) {
-//							if(diely.getVymera()!=null) {
-//								vymera = ziadatel.getVymera(diely.getRok());
-//								vymera = vymera.add(diely.getVymera());
-//								ziadatel.setVymera(diely.getRok(), vymera);
-//							}
-//						}
 					} else {
 						System.err.println("Invalid record: " + line + " riadok >" + i);
 					}
@@ -88,7 +85,7 @@ public class ZiadostiService {
 	}
 
 	private Map<Long, ZiadostDiely> listZiadostDiely = new HashMap<>();
-	private Map<String, Ziadatel> listZiadatelov = new HashMap<>();
+	private Map<Integer, Ziadatel> listZiadatelov = new HashMap<>();
 
 	private AtomicLong nextId = new AtomicLong(0);
 
@@ -104,7 +101,7 @@ public class ZiadostiService {
 		return new ArrayList(listZiadostDiely.values());// .subList(0, 1000);
 	}
 
-	public Ziadatel findZiadatel(String ico) {
+	public Ziadatel findZiadatel(int ico) {
 
 		return listZiadatelov.get(ico);
 	}
@@ -155,7 +152,7 @@ public class ZiadostiService {
 	}
 
 	private String filterTextOf(Ziadatel ziadatel) {
-		String filterableText = Stream.of(ziadatel.getZiadatel(), ziadatel.getIco()
+		String filterableText = Stream.of(ziadatel.getZiadatel(), ziadatel.getIco()+""
 		// String.valueOf(review.getScore()),
 		// String.valueOf(review.getCount()),
 		).collect(Collectors.joining("\t"));

@@ -24,7 +24,7 @@ public class Ziadatel implements Serializable {
 
     private Long id;
     private String ziadatel;
-    private String ico;
+    private int ico;
 
     private BigDecimal[] roky = new BigDecimal[20];
 
@@ -34,8 +34,8 @@ public class Ziadatel implements Serializable {
         if (roky[rok-2000] == null) {
             BigDecimal vymera = new BigDecimal(0);
             for (ZiadostDiely diely : listZiadostDiely) {
-                if ((diely.getRok() == rok) && (diely.getVymera() != null)) {
-                    vymera.add(diely.getVymera());
+                if (diely.getRok() == rok) {
+                    vymera = vymera.add(diely.getVymera());
                 }
             }
             roky[rok - 2000] = vymera;
@@ -43,14 +43,7 @@ public class Ziadatel implements Serializable {
         return roky[rok-2000];
     }
 
-//    public BigDecimal getVymera(int rok) {
-//        if (roky[rok - 2000] == null) {
-//            roky[rok - 2000] = new BigDecimal(0);
-//        }
-//        return roky[rok - 2000];
-//    }
-//
-//    public void setVymera(int rok, BigDecimal vymera) {
-//        roky[rok - 2000] = vymera;
-//    }
+
+
+
 }
