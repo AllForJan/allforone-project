@@ -36,7 +36,6 @@ public class RpvsService {
 						new TypeReference<Map<String, List<PoberatelVyhod>>>() {
 						});
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -74,6 +73,7 @@ public class RpvsService {
 				service.getPoberateliaSumar().add(sumar);
 			}
 
+			System.out.println("RPVS done");
 /*			service.getPoberateliaSumar().sort(Comparator.comparing(PoberatelSumar::getSumaVsetkychPlatieb));
 
 			try (Writer out = new OutputStreamWriter(new FileOutputStream("data/poberatelia.txt"), "UTF8")) {
