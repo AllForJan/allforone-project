@@ -39,7 +39,7 @@ public class PoberatelSumar {
 	public BigDecimal getSumaPlatieb(final int rok) {
 		BigDecimal val = new BigDecimal("0.0");
 		for (FirmaPlatby fp: this.platbyFirmam) {
-			val = val.add(fp.getSumaPlatieb(rok));
+			val = val.add(fp.getSumaPlatieb(rok) != null ? fp.getSumaPlatieb(rok) : new BigDecimal("0.0"));
 		}
 		return val;
 	}
