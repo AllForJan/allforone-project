@@ -1,12 +1,10 @@
 package com.vaadin.starter.beveragebuddy.backend;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,7 +13,7 @@ import com.vaadin.starter.beveragebuddy.ui.converters.LocalDateToStringConverter
 
 public class ZiadostiService {
 
-	private static class SingletonHolder {
+    private static class SingletonHolder {
 		static final ZiadostiService INSTANCE = createDemoService();
 
 		private SingletonHolder() {
@@ -43,36 +41,33 @@ public class ZiadostiService {
 						ZiadostDiely zd = new ZiadostDiely();
 						zd.setUrl(fields[0]);
 						zd.setZiadatel(fields[1]);
-						zd.setIco(fields[2]);
+						if (fields[2].equals("")) {
+							zd.setIco(-1);
+						} else {
+							zd.setIco(Integer.parseInt(fields[2]));
+						}
 						zd.setRok(Integer.parseInt(fields[3]));
 						zd.setLokalita(fields[4]);
 						zd.setDiel(fields[5]);
 						zd.setKultura(fields[6]);
-						String strVymera = fields[7].replace(" ha","");
+						String strVymera = fields[7].replace(" ha", "");
 						try {
 							zd.setVymera(new BigDecimal(strVymera));
-						}catch(NumberFormatException ex){
+						} catch (NumberFormatException ex) {
 							zd.setVymera(new BigDecimal("0.0000000000001"));
 						}
-
 
 						Ziadatel ziadatel = service.findZiadatel(zd.getIco());
 						if (ziadatel == null) {
 							ziadatel = new Ziadatel();
 							ziadatel.setIco(zd.getIco());
 							ziadatel.setZiadatel(zd.getZiadatel());
-							for (ZiadostDiely diely : ziadatel.getListZiadostDiely()) {
-								vymera = ziadatel.getVymera(diely.getRok());
-								vymera = vymera.add(diely.getVymera());
-								ziadatel.setVymera(diely.getRok(),vymera);
-							}
 						}
 
 						ziadatel.getListZiadostDiely().add(zd);
 
 						service.saveZiadatel(ziadatel);
 						service.saveZiadostDiely(zd);
-
 					} else {
 						System.err.println("Invalid record: " + line + " riadok >" + i);
 					}
@@ -83,81 +78,155 @@ public class ZiadostiService {
 				e.printStackTrace();
 
 			}
+			nacitajPriamePlatby(service);
 			return service;
+		}
+
+		private static void nacitajPriamePlatby(ZiadostiService service) {
+			int i = 0;
+			try {
+				//URL;Meno;PSC;Obec;Opatrenie;Opatrenie - Kod;Suma;Rok
+				Scanner scanner = new Scanner(new File("c:/tmp/dataFIIT/apa_prijimatelia_2018-03-15.csv"), "UTF-8");
+
+				String line;
+				scanner.nextLine();
+				while (scanner.hasNext()) {
+					i++;
+					line = scanner.nextLine().replace("&quot;", "").replace("&amp;", "");
+					String[] fields = line.split(";");
+					if (fields.length >= 8) {
+						PriamaPlatba pp = new PriamaPlatba();
+						pp.setUrl(fields[0]);
+						pp.setZiadatel(fields[1]);
+						pp.setPsc(fields[2]);
+						pp.setObec(fields[3]);
+						pp.setOpatrenie(fields[4]);
+						pp.setKodOpatrenia(fields[5]);
+						String strPlatba = fields[6];
+						try {
+							pp.setSuma(new BigDecimal(strPlatba));
+						} catch (NumberFormatException ex) {
+							pp.setSuma(new BigDecimal("0.0000000000001"));
+							System.err.println("Invalid parsing bigdecimal: " + line + " riadok >" + i);
+						}
+						try {
+							pp.setRok(Integer.parseInt(fields[7]));
+						} catch (NumberFormatException ex) {
+							pp.setRok(-1);
+							System.err.println("Invalid parsing of int: " + line + " riadok >" + i);
+						}
+						service.savePriamaPlatba(pp);
+					} else {
+						System.err.println("Invalid record: " + line + " riadok >" + i + " , " + fields.length);
+					}
+				}
+				scanner.close();
+			} catch (Exception e) {
+				System.out.println(e);
+				e.printStackTrace();
+			}
+
 		}
 	}
 
-	private Map<Long, ZiadostDiely> listZiadostDiely = new HashMap<>();
-	private Map<String, Ziadatel> listZiadatelov = new HashMap<>();
 
-	private AtomicLong nextId = new AtomicLong(0);
+    private Map<Long, ZiadostDiely> listZiadostDiely = new HashMap<>();
+    private Map<Integer, Ziadatel> listZiadatelov = new HashMap<>();
+    private Map<Long, PriamaPlatba> listPriamychPlatieb = new HashMap<>();
 
-	private ZiadostiService() {
-	}
+    private AtomicLong nextId = new AtomicLong(0);
 
-	public static ZiadostiService getInstance() {
-		return SingletonHolder.INSTANCE;
-	}
+    private ZiadostiService() {
+    }
 
-	public List<ZiadostDiely> findZiadostDiely(String filter) {
+    public static ZiadostiService getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
 
-		return new ArrayList(listZiadostDiely.values());// .subList(0, 1000);
-	}
+    public List<ZiadostDiely> findZiadostDiely(String filter) {
 
-	public Ziadatel findZiadatel(String ico) {
+        return new ArrayList(listZiadostDiely.values());// .subList(0, 1000);
+    }
 
-		return listZiadatelov.get(ico);
-	}
+    public Ziadatel findZiadatel(int ico) {
 
-	public List<Ziadatel> findZiadatelov(String filter) {
+        return listZiadatelov.get(ico);
+    }
+
+    public List<Ziadatel> findZiadatelov(String filter) {
+
+        if (filter != null) {
+            String normalizedFilter = filter.toLowerCase();
+
+            return listZiadatelov.values().stream()
+                    .filter(ziadatel -> filterTextOf(ziadatel).contains(normalizedFilter))
+                    .sorted((r1, r2) -> r2.getId().compareTo(r1.getId())).collect(Collectors.toList());
+        } else {
+            return new ArrayList(listZiadatelov.values());
+        }
+    }
+
+    public boolean deleteReview(ZiadostDiely dto) {
+        return listZiadostDiely.remove(dto.getId()) != null;
+    }
+
+    public void saveZiadostDiely(ZiadostDiely dto) {
+        ZiadostDiely entity = listZiadostDiely.get(dto.getId());
+
+        if (entity == null) {
+            entity = dto;
+            if (dto.getId() == null) {
+                entity.setId(nextId.incrementAndGet());
+            }
+            listZiadostDiely.put(entity.getId(), entity);
+            // System.out.println("ok " + entity.getId());
+        } else {
+            System.out.println("+++++++++++++" + entity.getId());
+        }
+    }
+
+    public void saveZiadatel(Ziadatel dto) {
+        Ziadatel entity = listZiadatelov.get(dto.getIco());
+
+        if (entity == null) {
+            entity = dto;
+            if (dto.getId() == null) {
+                entity.setId(nextId.incrementAndGet());
+            }
+            listZiadatelov.put(entity.getIco(), entity);
+
+        }
+    }
+
+    private String filterTextOf(Ziadatel ziadatel) {
+        String filterableText = Stream.of(ziadatel.getZiadatel(), ziadatel.getIco() + ""
+                // String.valueOf(review.getScore()),
+                // String.valueOf(review.getCount()),
+        ).collect(Collectors.joining("\t"));
+        return filterableText.toLowerCase();
+    }
+
+
+	public List<PriamaPlatba> findPriamaPlatba(String filter) {
 
 		if (filter != null) {
 			String normalizedFilter = filter.toLowerCase();
 
-			return listZiadatelov.values().stream()
-					.filter(ziadatel -> filterTextOf(ziadatel).contains(normalizedFilter))
+			return listPriamychPlatieb.values().stream()
+					.filter(platba -> platba.getZiadatel().toLowerCase().contains(normalizedFilter))
 					.sorted((r1, r2) -> r2.getId().compareTo(r1.getId())).collect(Collectors.toList());
 		} else {
-			return new ArrayList(listZiadatelov.values());
+			return new ArrayList(listPriamychPlatieb.values());
 		}
 	}
 
-	public boolean deleteReview(ZiadostDiely dto) {
-		return listZiadostDiely.remove(dto.getId()) != null;
+	private void savePriamaPlatba(PriamaPlatba pp) {
+		pp.setId(nextId.incrementAndGet());
+		listPriamychPlatieb.put(pp.getId(), pp);
 	}
 
-	public void saveZiadostDiely(ZiadostDiely dto) {
-		ZiadostDiely entity = listZiadostDiely.get(dto.getId());
-
-		if (entity == null) {
-			entity = dto;
-			if (dto.getId() == null) {
-				entity.setId(nextId.incrementAndGet());
-			}
-			listZiadostDiely.put(entity.getId(), entity);
-			// System.out.println("ok " + entity.getId());
-		} else {
-			System.out.println("+++++++++++++" + entity.getId());
-		}
-	}
-
-	public void saveZiadatel(Ziadatel dto) {
-		Ziadatel entity = listZiadatelov.get(dto.getIco());
-
-		if (entity == null) {
-			entity = dto;
-			if (dto.getId() == null) {
-				entity.setId(nextId.incrementAndGet());
-			}
-			listZiadatelov.put(entity.getIco(), entity);
-
-		}
-	}
-
-	private String filterTextOf(Ziadatel ziadatel) {
-		String filterableText = Stream.of(ziadatel.getZiadatel(), ziadatel.getIco()
-		// String.valueOf(review.getScore()),
-		// String.valueOf(review.getCount()),
+	private String filterTextOf(PriamaPlatba priamaPlatba) {
+		String filterableText = Stream.of(priamaPlatba.getZiadatel()
 		).collect(Collectors.joining("\t"));
 		return filterableText.toLowerCase();
 	}
