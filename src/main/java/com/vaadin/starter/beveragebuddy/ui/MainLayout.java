@@ -16,6 +16,7 @@ import com.vaadin.flow.server.PageConfigurator;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.starter.beveragebuddy.ui.views.categorieslist.CategoriesList;
+import com.vaadin.starter.beveragebuddy.ui.views.priame_platby.ViewPriamePlatbyList;
 import com.vaadin.starter.beveragebuddy.ui.views.reviewslist.ReviewsList;
 import com.vaadin.starter.beveragebuddy.ui.views.ziadatelia.ViewZiadateliaList;
 import com.vaadin.starter.beveragebuddy.ui.views.ziadosti.ViewZiadostiList;
@@ -31,6 +32,7 @@ public class MainLayout extends Div implements RouterLayout,
     private RouterLink reviews;
     private RouterLink ziadatelia;
     private RouterLink ziadosti;
+    private RouterLink platby;
     
 
     public MainLayout() {
@@ -52,10 +54,14 @@ public class MainLayout extends Div implements RouterLayout,
         ziadatelia = new RouterLink(null, ViewZiadateliaList.class);
         ziadatelia.add(new Icon(VaadinIcons.USERS), new Text("Žiadatelia"));
         ziadatelia.addClassName("main-layout__nav-item");
+
+        platby = new RouterLink(null, ViewPriamePlatbyList.class);
+        platby.add(new Icon(VaadinIcons.LIST), new Text("Platby"));
+        platby.addClassName("main-layout__nav-item");
         
         
         
-        Div navigation = new Div(ziadatelia, ziadosti, reviews, categories);
+        Div navigation = new Div(ziadatelia, ziadosti, platby, reviews, categories);
         
         
         
@@ -76,11 +82,13 @@ public class MainLayout extends Div implements RouterLayout,
         boolean categoriesActive = segment.equals(categories.getHref());
         boolean ziadostiActive = segment.equals(ziadosti.getHref());
         boolean ziadateliaActive = segment.equals(ziadatelia.getHref());
+        boolean platbyActive = segment.equals(platby.getHref());
 
         ziadatelia.setClassName(ACTIVE_ITEM_STYLE, ziadateliaActive);
         ziadosti.setClassName(ACTIVE_ITEM_STYLE, ziadostiActive);
         reviews.setClassName(ACTIVE_ITEM_STYLE, reviewsActive);
         categories.setClassName(ACTIVE_ITEM_STYLE, categoriesActive);
+        platby.setClassName(ACTIVE_ITEM_STYLE, platbyActive);
         
         
     }
