@@ -50,7 +50,7 @@ public class ZiadostiService {
 					row.setZamestnanciStat(items[7]);
 					row.setZamestnanciPocet(StringUtils.isNotEmpty(items[8]) ? Integer.parseInt(items[8]) : -1);
 					row.setAdresa(items[9]);
-					row.setPsc(StringUtils.leftPad(items[10], 5, "0"));
+					row.setPsc(StringUtils.leftPad(items[10].replace(" ", ""), 5, "0"));
 					row.setMesto(items[11]);
 					row.setOkres(items[12]);
 					row.setKraj(items[13]);
