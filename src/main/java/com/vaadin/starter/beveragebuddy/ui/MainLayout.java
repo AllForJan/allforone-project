@@ -16,6 +16,7 @@ import com.vaadin.flow.server.PageConfigurator;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 import com.vaadin.starter.beveragebuddy.ui.views.categorieslist.CategoriesList;
+import com.vaadin.starter.beveragebuddy.ui.views.poberatelia.ViewPoberateliaList;
 import com.vaadin.starter.beveragebuddy.ui.views.priame_platby.ViewPriamePlatbyList;
 import com.vaadin.starter.beveragebuddy.ui.views.reviewslist.ReviewsList;
 import com.vaadin.starter.beveragebuddy.ui.views.ziadatelia.ViewZiadateliaList;
@@ -55,7 +56,7 @@ public class MainLayout extends Div implements RouterLayout,
         platby.add(new Icon(VaadinIcons.EURO), new Text("Platby"));
         platby.addClassName("main-layout__nav-item");
 
-        poberatelia = new RouterLink(null, ViewPriamePlatbyList.class);
+        poberatelia = new RouterLink(null, ViewPoberateliaList.class);
         poberatelia.add(new Icon(VaadinIcons.DIAMOND), new Text("Poberatelia"));
         poberatelia.addClassName("main-layout__nav-item");
 
