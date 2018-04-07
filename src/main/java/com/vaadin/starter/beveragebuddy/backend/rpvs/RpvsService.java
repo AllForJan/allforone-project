@@ -67,8 +67,7 @@ public class RpvsService {
 						continue;
 					}
 
-					platbyFirme.getPriamePlatby().addAll(ZiadostiService.getInstance()
-							.findPriamaPlatba(ziadatel.getZiadatel(), ziadatel.getFinstatData().getPsc()));
+					platbyFirme.getPriamePlatby().addAll(ZiadostiService.getInstance().findPriamaPlatba(ziadatel));
 					platbyFirme.setIco(ico);
 					platbyFirme.setNazov(ziadatel.getZiadatel());
 					sumar.getPlatbyFirmam().add(platbyFirme);
@@ -121,8 +120,7 @@ public class RpvsService {
 			if (rokOd >= 2004 && rokOd <= 2017 && rokDo >= 2004 && rokDo <= 2017) {
 				this.poberateliaSumar.stream()
 						.filter(poberatelSumar -> filterTextOf(poberatelSumar).contains(normalizedFilter))
-						.sorted((r1, r2) -> r2.getSumaVsetkychPlatieb()
-								.compareTo(r1.getSumaVsetkychPlatieb()))
+						.sorted((r1, r2) -> r2.getSumaVsetkychPlatieb().compareTo(r1.getSumaVsetkychPlatieb()))
 						.collect(Collectors.toList());
 			}
 			return new ArrayList<>();
@@ -136,11 +134,10 @@ public class RpvsService {
 	// listPriamychPlatieb.put(pp.getId(), pp);
 	// }
 	private String filterTextOf(PoberatelSumar poberatelSumar) {
-		String filterableText = Stream.of(poberatelSumar.getPoberatel().getName(), 
-				poberatelSumar.getPoberatel().getStreet(),
-				poberatelSumar.getPoberatel().getCity(),
-				poberatelSumar.getPoberatel().getZipCode()
-		).collect(Collectors.joining("\t"));
+		String filterableText = Stream
+				.of(poberatelSumar.getPoberatel().getName(), poberatelSumar.getPoberatel().getStreet(),
+						poberatelSumar.getPoberatel().getCity(), poberatelSumar.getPoberatel().getZipCode())
+				.collect(Collectors.joining("\t"));
 		return filterableText.toLowerCase();
 	}
 
