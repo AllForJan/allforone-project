@@ -216,7 +216,7 @@ public class ZiadostiService {
 
             return listZiadatelov.values().stream()
                     .filter(ziadatel -> filterTextOf(ziadatel).contains(normalizedFilter))
-                    .sorted((r1, r2) -> r2.getId().compareTo(r1.getId())).collect(Collectors.toList());
+                    .sorted((r1, r2) -> r2.getMaxRozdielVymer().compareTo(r1.getMaxRozdielVymer())).collect(Collectors.toList());
         } else {
             return new ArrayList(listZiadatelov.values());
         }

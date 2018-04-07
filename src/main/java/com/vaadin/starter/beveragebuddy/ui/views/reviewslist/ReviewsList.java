@@ -49,7 +49,7 @@ import java.util.List;
  * Implemented using a simple template.
  */
 @Route(value = "", layout = MainLayout.class)
-@PageTitle("Review List")
+@PageTitle("Naši ľudia")
 @Tag("reviews-list")
 @HtmlImport("frontend://src/views/reviewslist/reviews-list.html")
 public class ReviewsList extends PolymerTemplate<ReviewsModel> {

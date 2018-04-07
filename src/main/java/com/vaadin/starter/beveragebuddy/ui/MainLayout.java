@@ -44,7 +44,7 @@ public class MainLayout extends Div implements RouterLayout,
         reviews.addClassName("main-layout__nav-item");
 
         categories = new RouterLink(null, CategoriesList.class);
-        categories.add(new Icon(VaadinIcons.ARCHIVES), new Text("Categories"));
+        categories.add(new Icon(VaadinIcons.ARCHIVES), new Text("Naši ľudia"));
         categories.addClassName("main-layout__nav-item");
         
         ziadosti = new RouterLink(null, ViewZiadostiList.class);
