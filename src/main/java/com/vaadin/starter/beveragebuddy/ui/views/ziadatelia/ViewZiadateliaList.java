@@ -84,6 +84,14 @@ public class ViewZiadateliaList extends VerticalLayout {
 		grid.addColumn(Ziadatel::getIco).setHeader("IČO").setResizable(true).setSortable(true);
 		grid.addColumn(new ComponentRenderer<>(this::createEditButton)).setFlexGrow(0);
 
+		int from = 2005;
+		int to = 2017;
+		
+		for(int i = from; i<=to; i++) {
+			final int rok = i;
+			grid.addColumn(ziadatel -> ziadatel.getVymeraZaRok(rok)).setHeader(rok+"");	
+		}
+		
 		//grid.addColumn(TemplateRenderer.<Ziadatel>of("<b>[[item.listZiadostDiely.size]]</b>")
 		//		.withProperty(Ziadatel::getListZiadostDiely, z -> z.getListZiadostDiely().size()))
 		//		.setHeader("Žiadosti");
