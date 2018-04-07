@@ -55,24 +55,24 @@ public class ZiadostiService {
 							zd.setVymera(new BigDecimal("0.0000000000001"));
 						}
 
-
 						Ziadatel ziadatel = service.findZiadatel(zd.getIco());
 						if (ziadatel == null) {
 							ziadatel = new Ziadatel();
 							ziadatel.setIco(zd.getIco());
 							ziadatel.setZiadatel(zd.getZiadatel());
-							for (ZiadostDiely diely : ziadatel.getListZiadostDiely()) {
-								vymera = ziadatel.getVymera(diely.getRok());
-								vymera = vymera.add(diely.getVymera());
-								ziadatel.setVymera(diely.getRok(),vymera);
-							}
 						}
 
 						ziadatel.getListZiadostDiely().add(zd);
 
 						service.saveZiadatel(ziadatel);
 						service.saveZiadostDiely(zd);
-
+//						for (ZiadostDiely diely : ziadatel.getListZiadostDiely()) {
+//							if(diely.getVymera()!=null) {
+//								vymera = ziadatel.getVymera(diely.getRok());
+//								vymera = vymera.add(diely.getVymera());
+//								ziadatel.setVymera(diely.getRok(), vymera);
+//							}
+//						}
 					} else {
 						System.err.println("Invalid record: " + line + " riadok >" + i);
 					}

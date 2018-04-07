@@ -14,40 +14,43 @@ import lombok.ToString;
 /**
  * Represents a beverage category.
  */
-@Getter @Setter @EqualsAndHashCode @ToString
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class Ziadatel implements Serializable {
 
-	// URL;Ziadatel;ICO;Rok;Lokalita;Diel;Kultura;Vymera
+    // URL;Ziadatel;ICO;Rok;Lokalita;Diel;Kultura;Vymera
 
-	private Long id;
-	private String ziadatel;
-	private String ico;
+    private Long id;
+    private String ziadatel;
+    private String ico;
 
-	private List<BigDecimal> roky;
+    private BigDecimal[] roky = new BigDecimal[20];
 
-//	private BigDecimal rok2005;
-//	private BigDecimal rok2006;
-//	private BigDecimal rok2007;
-//	private BigDecimal rok2008;
-//	private BigDecimal rok2009;
-//	private BigDecimal rok2010;
-//	private BigDecimal rok2011;
-//	private BigDecimal rok2012;
-//	private BigDecimal rok2013;
-//	private BigDecimal rok2014;
-//	private BigDecimal rok2015;
-//	private BigDecimal rok2016;
-//	private BigDecimal rok2017;
+    private List<ZiadostDiely> listZiadostDiely = new ArrayList<>();
+
+    public BigDecimal getVymeraZaRok(int rok){
+        if (roky[rok-2000] == null) {
+            BigDecimal vymera = new BigDecimal(0);
+            for (ZiadostDiely diely : listZiadostDiely) {
+                if ((diely.getRok() == rok) && (diely.getVymera() != null)) {
+                    vymera.add(diely.getVymera());
+                }
+            }
+            roky[rok - 2000] = vymera;
+        }
+        return roky[rok-2000];
+    }
+
+//    public BigDecimal getVymera(int rok) {
+//        if (roky[rok - 2000] == null) {
+//            roky[rok - 2000] = new BigDecimal(0);
+//        }
+//        return roky[rok - 2000];
+//    }
 //
-//	private BigDecimal vymera;
-
-	private List<ZiadostDiely> listZiadostDiely = new ArrayList<>();
-
-	public BigDecimal getVymera(int rok){
-		return roky.get(rok - 2000);
-	}
-
-	public void setVymera(int rok, BigDecimal vymera){
-		roky.set(rok - 2000,vymera);
-	}
+//    public void setVymera(int rok, BigDecimal vymera) {
+//        roky[rok - 2000] = vymera;
+//    }
 }
