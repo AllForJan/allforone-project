@@ -1,28 +1,23 @@
 package com.vaadin.starter.beveragebuddy.backend.rpvs;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vaadin.starter.beveragebuddy.backend.PriamaPlatba;
 import com.vaadin.starter.beveragebuddy.backend.Ziadatel;
 import com.vaadin.starter.beveragebuddy.backend.ZiadostiService;
-
-import elemental.util.Collections;
 
 public class RpvsService {
 
@@ -33,6 +28,7 @@ public class RpvsService {
 		}
 
 		private static RpvsService createDemoService() {
+			final RpvsService service = new RpvsService();
 
 			ZiadostiService.getInstance();
 
@@ -60,7 +56,7 @@ public class RpvsService {
 				}
 			}
 
-			List<PoberatelSumar> poberateliaCelkovo = new ArrayList<>();
+			// List<PoberatelSumar> poberateliaCelkovo = new ArrayList<>();
 			for (PoberatelVyhod poberatel : poberateloveFirmy.keySet()) {
 				PoberatelSumar sumar = new PoberatelSumar();
 				sumar.setPoberatel(poberatel);
@@ -70,19 +66,20 @@ public class RpvsService {
 					if (ziadatel == null) {
 						continue;
 					}
-					platbyFirme.getPriamePlatby()
-							.addAll(ZiadostiService.getInstance().findPriamaPlatba(ziadatel.getZiadatel()));
+
+					platbyFirme.getPriamePlatby().addAll(ZiadostiService.getInstance()
+							.findPriamaPlatba(ziadatel.getZiadatel(), ziadatel.getFinstatData().getPsc()));
 					platbyFirme.setIco(ico);
 					platbyFirme.setNazov(ziadatel.getZiadatel());
 					sumar.getPlatbyFirmam().add(platbyFirme);
 				}
-				poberateliaCelkovo.add(sumar);
+				service.getPoberateliaSumar().add(sumar);
 			}
 
-			poberateliaCelkovo.sort(Comparator.comparing(PoberatelSumar::getSumaVsetkychPlatieb));
+			service.getPoberateliaSumar().sort(Comparator.comparing(PoberatelSumar::getSumaVsetkychPlatieb));
 
 			try (Writer out = new OutputStreamWriter(new FileOutputStream("data/poberatelia.txt"), "UTF8")) {
-				for (PoberatelSumar sumar : poberateliaCelkovo) {
+				for (PoberatelSumar sumar : service.getPoberateliaSumar()) {
 					out.write(sumar.getPoberatel().toString() + "\t" + sumar.getSumaVsetkychPlatieb() + " EUR\n"
 							+ poberateloveFirmy.get(sumar.getPoberatel()) + "\n");
 				}
@@ -98,38 +95,13 @@ public class RpvsService {
 				e.printStackTrace();
 			}
 
-			final RpvsService service = new RpvsService();
-			// nacitajPriamePlatby(service);
 			return service;
 		}
-
-		/*
-		 * private static void nacitajPriamePlatby(RpvsService service) { int i = 0; try
-		 * { //URL;Meno;PSC;Obec;Opatrenie;Opatrenie - Kod;Suma;Rok Scanner scanner =
-		 * new Scanner(new File("c:/tmp/dataFIIT/apa_prijimatelia_2018-03-15.csv"),
-		 * "UTF-8");
-		 * 
-		 * String line; scanner.nextLine(); while (scanner.hasNext()) { i++; line =
-		 * scanner.nextLine().replace("&quot;", "").replace("&amp;", ""); String[]
-		 * fields = line.split(";"); if (fields.length >= 8) { PriamaPlatba pp = new
-		 * PriamaPlatba(); pp.setUrl(fields[0]); pp.setZiadatel(fields[1]);
-		 * pp.setPsc(fields[2]); pp.setObec(fields[3]); pp.setOpatrenie(fields[4]);
-		 * pp.setKodOpatrenia(fields[5]); String strPlatba = fields[6]; try {
-		 * pp.setSuma(new BigDecimal(strPlatba)); } catch (NumberFormatException ex) {
-		 * pp.setSuma(new BigDecimal("0.0000000000001"));
-		 * System.err.println("Invalid parsing bigdecimal: " + line + " riadok >" + i);
-		 * } try { pp.setRok(Integer.parseInt(fields[7])); } catch
-		 * (NumberFormatException ex) { pp.setRok(-1);
-		 * System.err.println("Invalid parsing of int: " + line + " riadok >" + i); }
-		 * service.savePriamaPlatba(pp); } else { System.err.println("Invalid record: "
-		 * + line + " riadok >" + i + " , " + fields.length); } } scanner.close(); }
-		 * catch (Exception e) { System.out.println(e); e.printStackTrace(); } }
-		 */
 	}
 
-	private Map<Long, PriamaPlatba> listPriamychPlatieb = new HashMap<>();
+	private List<PoberatelSumar> poberateliaSumar = new ArrayList<>();
 
-	private AtomicLong nextId = new AtomicLong(0);
+	// private AtomicLong nextId = new AtomicLong(0);
 
 	private RpvsService() {
 	}
@@ -138,41 +110,43 @@ public class RpvsService {
 		return SingletonHolder.INSTANCE;
 	}
 
-	public List<PriamaPlatba> findPriamaPlatba(String filter) {
-
-		if (filter != null) {
-			String normalizedFilter = filter.toLowerCase();
-
-			return listPriamychPlatieb.values().stream()
-					.filter(platba -> platba.getZiadatel().toLowerCase().contains(normalizedFilter))
-					.sorted((r1, r2) -> r2.getId().compareTo(r1.getId())).collect(Collectors.toList());
-		} else {
-			return new ArrayList(listPriamychPlatieb.values());
-		}
+	public List<PoberatelSumar> getPoberateliaSumar() {
+		return this.poberateliaSumar;
 	}
 
 	public List<PoberatelSumar> findPoberatelov(String filter, int rokOd, int rokDo) {
+		if (filter != null) {
+			String normalizedFilter = filter.toLowerCase();
 
-		/*
-		 * if (filter != null) { String normalizedFilter = filter.toLowerCase();
-		 * 
-		 * if (rokOd >= 2004 && rokOd <= 2017 && rokDo >= 2004 && rokDo <= 2017) {
-		 * return listZiadatelov.values().stream() .filter(ziadatel ->
-		 * filterTextOf(ziadatel).contains(normalizedFilter)) .sorted((r1, r2) ->
-		 * r2.getMaxRozdielVymer(rokOd, rokDo) .compareTo(r1.getMaxRozdielVymer(rokOd,
-		 * rokDo))) .collect(Collectors.toList()); } return new ArrayList<>(); } else {
-		 * return new ArrayList(listZiadatelov.values()); }
-		 */
-		return null;
+			if (rokOd >= 2004 && rokOd <= 2017 && rokDo >= 2004 && rokDo <= 2017) {
+				this.poberateliaSumar.stream()
+						.filter(poberatelSumar -> filterTextOf(poberatelSumar).contains(normalizedFilter))
+						.sorted((r1, r2) -> r2.getSumaVsetkychPlatieb()
+								.compareTo(r1.getSumaVsetkychPlatieb()))
+						.collect(Collectors.toList());
+			}
+			return new ArrayList<>();
+		} else {
+			return Collections.unmodifiableList(this.poberateliaSumar);
+		}
 	}
 
-	private void savePriamaPlatba(PriamaPlatba pp) {
-		pp.setId(nextId.incrementAndGet());
-		listPriamychPlatieb.put(pp.getId(), pp);
-	}
-
-	private String filterTextOf(PriamaPlatba priamaPlatba) {
-		String filterableText = Stream.of(priamaPlatba.getZiadatel()).collect(Collectors.joining("\t"));
+	// private void savePriamaPlatba(PriamaPlatba pp) {
+	// pp.setId(nextId.incrementAndGet());
+	// listPriamychPlatieb.put(pp.getId(), pp);
+	// }
+	private String filterTextOf(PoberatelSumar poberatelSumar) {
+		String filterableText = Stream.of(poberatelSumar.getPoberatel().getName(), 
+				poberatelSumar.getPoberatel().getStreet(),
+				poberatelSumar.getPoberatel().getCity(),
+				poberatelSumar.getPoberatel().getZipCode()
+		).collect(Collectors.joining("\t"));
 		return filterableText.toLowerCase();
 	}
+
+	// private String filterTextOf(PriamaPlatba priamaPlatba) {
+	// String filterableText =
+	// Stream.of(priamaPlatba.getZiadatel()).collect(Collectors.joining("\t"));
+	// return filterableText.toLowerCase();
+	// }
 }
