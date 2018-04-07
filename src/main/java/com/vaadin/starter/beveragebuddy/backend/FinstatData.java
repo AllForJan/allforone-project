@@ -32,6 +32,7 @@ public class FinstatData {
 	private String zamestnanciStat;
 	private int zamestnanciPocet;
 	private String adresa;
+	private String psc;
 	private String mesto;
 	private String okres;
 	private String kraj;
