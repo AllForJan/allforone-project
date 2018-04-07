@@ -163,19 +163,17 @@ public class ViewPoberateliaList extends VerticalLayout {
 	}
 
 	private void updateView() {
-		if (!StringUtils.isEmpty(rokDoField.getValue()) && !StringUtils.isEmpty(rokOdField.getValue())) {
-			List<PoberatelSumar> list = RpvsService.getInstance().findPoberatelov(searchField.getValue(),
-					Integer.parseInt(rokOdField.getValue()), Integer.parseInt(rokDoField.getValue()));
+		List<PoberatelSumar> list = RpvsService.getInstance().findPoberatelov(searchField.getValue(), 2015, 2016);
 
-			grid.setItems(list);
+		grid.setItems(list);
 
-			if (searchField.getValue().length() > 0) {
-				header.setText("Search for “" + searchField.getValue() + "”");
-			} else {
-				header.setText("Poberatelia");
-			}
-			grid.getColumnByKey("poberatel").setFooter("" + list.size()).setHeader("Poberateľ");
+		if (searchField.getValue().length() > 0) {
+			header.setText("Search for “" + searchField.getValue() + "”");
+		} else {
+			header.setText("Poberatelia");
 		}
+		grid.getColumnByKey("poberatel").setFooter("" + list.size()).setHeader("Poberateľ");
+
 	}
 
 	private void comboBoxChanged(String value) {
