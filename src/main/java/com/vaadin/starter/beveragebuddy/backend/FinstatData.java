@@ -16,7 +16,10 @@ import lombok.ToString;
  * @author martin
  *
  */
-@Getter @Setter @EqualsAndHashCode @ToString
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 public class FinstatData {
 
 	private String ico;
@@ -32,6 +35,14 @@ public class FinstatData {
 	private String mesto;
 	private String okres;
 	private String kraj;
-	
+
 	private List<FinstatYearlyData> rocneData = new ArrayList<>();
+
+	private FinstatYearlyData getFinstatYearlyData(int rok) {
+		for (FinstatYearlyData yd : rocneData) {
+			if (yd.getRok() == rok)
+				return yd;
+		}
+		return null;
+	}
 }

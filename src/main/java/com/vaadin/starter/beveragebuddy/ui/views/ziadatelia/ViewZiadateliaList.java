@@ -125,7 +125,10 @@ public class ViewZiadateliaList extends VerticalLayout {
 
 		grid.addColumn(ziadatel -> ziadatel.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
 				Integer.parseInt(rokDoField.getValue()), true)).setHeader("Indikátok výmer").setResizable(true)
-				.setSortable(true);
+				.setSortable(true).setComparator((person1, person2) -> person1.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
+						Integer.parseInt(rokDoField.getValue()), true)
+		                .compareTo(person2.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
+		        				Integer.parseInt(rokDoField.getValue()), true)));
 
 		container.add(header, grid);
 
