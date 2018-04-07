@@ -1,12 +1,10 @@
 package com.vaadin.starter.beveragebuddy.ui.views.poberatelia;
 
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,6 +14,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.starter.beveragebuddy.backend.Ziadatel;
+import com.vaadin.starter.beveragebuddy.backend.PriamaPlatba;
 import com.vaadin.starter.beveragebuddy.backend.rpvs.FirmaPlatby;
 import com.vaadin.starter.beveragebuddy.backend.rpvs.PoberatelSumar;
 import com.vaadin.starter.beveragebuddy.backend.rpvs.RpvsService;
@@ -129,15 +128,45 @@ public class ViewPoberateliaList extends VerticalLayout {
 
 		createYearColumns();
 
-		grid.addColumn(poberatel -> poberatel.getSumaVsetkychPlatieb()).setHeader("Celková suma").setResizable(true)
+		grid.addColumn(poberatel -> poberatel.getSumaVsetkychPlatieb()).setHeader("Platby Celkom").setResizable(true)
 				.setSortable(true);
 
 		grid.setItemDetailsRenderer(new ComponentRenderer<>(poberatel -> {
 			VerticalLayout layout = new VerticalLayout();
-			for (FirmaPlatby fp : poberatel.getPlatbyFirmam()) {
-				layout.add(new Label(fp.getNazov() + " - " + fp.getIco() + ""));
-				// layout.add(new Label("Year of birth: " + person.getYearOfBirth()));
-			}
+			Grid<FirmaPlatby> g = new Grid<>();
+			g.addColumn(firma -> firma.getNazov()).setHeader("Firma").setKey("pocet");
+			g.addColumn(firma -> firma.getIco()).setHeader("IČO");
+			g.addColumn(firma -> firma.getSumaPlatieb(2015)).setHeader("Platby 2015");
+			g.addColumn(firma -> firma.getSumaPlatieb(2016)).setHeader("Platby 2016");
+			g.addColumn(firma -> firma.getSumaPlatieb(2016)).setHeader("Platby Celkom");
+			g.setItems(poberatel.getPlatbyFirmam());
+			g.setItemDetailsRenderer(new ComponentRenderer<>(firma -> {
+				VerticalLayout layout2 = new VerticalLayout();
+				Grid<PriamaPlatba> g2 = new Grid<>();
+				g2.addColumn(platba -> platba.getZiadatel()).setHeader("Žiadatel");
+				g2.addColumn(platba -> platba.getPsc()).setHeader("PSČ");
+				g2.addColumn(platba -> platba.getObec()).setHeader("Obec");
+				g2.addColumn(platba -> platba.getKodOpatrenia()).setHeader("Opatrenie");
+				g2.addColumn(platba -> platba.getRok()).setHeader("Rok");
+				g2.addColumn(platba -> platba.getSuma()).setHeader("Platba");
+				g2.setItems(firma.getPriamePlatby());
+				
+				
+				
+				// for (FirmaPlatby fp : poberatel.getPlatbyFirmam()) {
+				// layout.add(new Label(fp.getNazov() + " - " + fp.getIco() + ""));
+				// // layout.add(new Label("Year of birth: " + person.getYearOfBirth()));
+				// }
+				layout2.add(g2);
+				return layout2;
+			}));
+			
+			
+			// for (FirmaPlatby fp : poberatel.getPlatbyFirmam()) {
+			// layout.add(new Label(fp.getNazov() + " - " + fp.getIco() + ""));
+			// // layout.add(new Label("Year of birth: " + person.getYearOfBirth()));
+			// }
+			layout.add(g);
 			return layout;
 		}));
 
