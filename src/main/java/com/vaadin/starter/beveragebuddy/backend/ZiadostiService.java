@@ -121,7 +121,7 @@ public class ZiadostiService {
 							ziadatel.setFinstatData(rows.get(ziadatel.getIco()));
 						}
 
-						ziadatel.getListZiadostDiely().add(zd);
+						ziadatel.addZiadostDiely(zd);
 
 						service.saveZiadatel(ziadatel);
 						service.saveZiadostDiely(zd);
@@ -134,6 +134,7 @@ public class ZiadostiService {
 				e.printStackTrace();
 
 			}
+
 			nacitajPriamePlatby(service);
 			return service;
 		}
