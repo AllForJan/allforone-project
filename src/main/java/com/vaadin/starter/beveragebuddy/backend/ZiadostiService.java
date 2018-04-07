@@ -282,6 +282,14 @@ public class ZiadostiService {
 		}
 	}
 
+	public List<PriamaPlatba> findPriamaPlatba(String name, String psc) {
+		return listPriamychPlatieb.values().stream()
+				.filter(platba -> platba.getZiadatel().contains(name)
+						&& platba.getPsc().replace(" ", "").equals(psc.replace(" ", "")))
+				.sorted((r1, r2) -> r2.getId().compareTo(r1.getId())).collect(Collectors.toList());
+
+	}
+
 	private void savePriamaPlatba(PriamaPlatba pp) {
 		pp.setId(nextId.incrementAndGet());
 		listPriamychPlatieb.put(pp.getId(), pp);
