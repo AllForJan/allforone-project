@@ -14,85 +14,85 @@ import com.vaadin.starter.beveragebuddy.ui.converters.LocalDateToStringConverter
 public class ZiadostiService {
 
     private static class SingletonHolder {
-        static final ZiadostiService INSTANCE = createDemoService();
+		static final ZiadostiService INSTANCE = createDemoService();
 
-        private SingletonHolder() {
-        }
+		private SingletonHolder() {
+		}
 
-        private static ZiadostiService createDemoService() {
-            final ZiadostiService service = new ZiadostiService();
-            int rok;
-            BigDecimal vymera;
+		private static ZiadostiService createDemoService() {
+			final ZiadostiService service = new ZiadostiService();
+			int rok;
+			BigDecimal vymera;
 
-            try {
-                // URL;Ziadatel;ICO;Rok;Lokalita;Diel;Kultura;Vymera
-                Scanner scanner = new Scanner(new File("c:/tmp/dataFIIT/ziadostiDiely.csv"), "UTF-8");
-                // scanner.useDelimiter("\n");
+			try {
+				// URL;Ziadatel;ICO;Rok;Lokalita;Diel;Kultura;Vymera
+				Scanner scanner = new Scanner(new File("c:/tmp/dataFIIT/ziadostiDiely.csv"), "UTF-8");
+				// scanner.useDelimiter("\n");
 
-                // while (scanner.hasNext()) {
-                // System.out.println(scanner.nextLine());
-                // }
-                int i = 0;
-                while (scanner.hasNextLine()) {
-                    i++;
-                    String line = scanner.nextLine();
-                    String[] fields = line.split(";");
-                    if (fields.length >= 8) {
-                        ZiadostDiely zd = new ZiadostDiely();
-                        zd.setUrl(fields[0]);
-                        zd.setZiadatel(fields[1]);
-                        if (fields[2].equals("")) {
-                            zd.setIco(-1);
-                        } else {
-                            zd.setIco(Integer.parseInt(fields[2]));
-                        }
-                        zd.setRok(Integer.parseInt(fields[3]));
-                        zd.setLokalita(fields[4]);
-                        zd.setDiel(fields[5]);
-                        zd.setKultura(fields[6]);
-                        String strVymera = fields[7].replace(" ha", "");
-                        try {
-                            zd.setVymera(new BigDecimal(strVymera));
-                        } catch (NumberFormatException ex) {
-                            zd.setVymera(new BigDecimal("0.0000000000001"));
-                        }
+				// while (scanner.hasNext()) {
+				// System.out.println(scanner.nextLine());
+				// }
+				int i = 0;
+				while (scanner.hasNextLine()) {
+					i++;
+					String line = scanner.nextLine();
+					String[] fields = line.split(";");
+					if (fields.length >= 8) {
+						ZiadostDiely zd = new ZiadostDiely();
+						zd.setUrl(fields[0]);
+						zd.setZiadatel(fields[1]);
+						if (fields[2].equals("")) {
+							zd.setIco(-1);
+						} else {
+							zd.setIco(Integer.parseInt(fields[2]));
+						}
+						zd.setRok(Integer.parseInt(fields[3]));
+						zd.setLokalita(fields[4]);
+						zd.setDiel(fields[5]);
+						zd.setKultura(fields[6]);
+						String strVymera = fields[7].replace(" ha", "");
+						try {
+							zd.setVymera(new BigDecimal(strVymera));
+						} catch (NumberFormatException ex) {
+							zd.setVymera(new BigDecimal("0.0000000000001"));
+						}
 
-                        Ziadatel ziadatel = service.findZiadatel(zd.getIco());
-                        if (ziadatel == null) {
-                            ziadatel = new Ziadatel();
-                            ziadatel.setIco(zd.getIco());
-                            ziadatel.setZiadatel(zd.getZiadatel());
-                        }
+						Ziadatel ziadatel = service.findZiadatel(zd.getIco());
+						if (ziadatel == null) {
+							ziadatel = new Ziadatel();
+							ziadatel.setIco(zd.getIco());
+							ziadatel.setZiadatel(zd.getZiadatel());
+						}
 
-                        ziadatel.getListZiadostDiely().add(zd);
+						ziadatel.getListZiadostDiely().add(zd);
 
-                        service.saveZiadatel(ziadatel);
-                        service.saveZiadostDiely(zd);
-                    } else {
-                        System.err.println("Invalid record: " + line + " riadok >" + i);
-                    }
-                }
-                scanner.close();
-            } catch (Exception e) {
-                System.out.println(e);
-                e.printStackTrace();
+						service.saveZiadatel(ziadatel);
+						service.saveZiadostDiely(zd);
+					} else {
+						System.err.println("Invalid record: " + line + " riadok >" + i);
+					}
+				}
+				scanner.close();
+			} catch (Exception e) {
+				System.out.println(e);
+				e.printStackTrace();
 
-            }
-            nacitajPriamePlatby(service);
-            return service;
-        }
+			}
+			nacitajPriamePlatby(service);
+			return service;
+		}
 
 		private static void nacitajPriamePlatby(ZiadostiService service) {
 			int i = 0;
-			BufferedReader br = null;
 			try {
 				//URL;Meno;PSC;Obec;Opatrenie;Opatrenie - Kod;Suma;Rok
-				br = new BufferedReader(new FileReader(new File("c:/tmp/dataFIIT/apa_prijimatelia_2018-03-15.csv")));
+				Scanner scanner = new Scanner(new File("c:/tmp/dataFIIT/apa_prijimatelia_2018-03-15.csv"), "UTF-8");
+
 				String line;
-				br.readLine();
-				while ((line = br.readLine()) != null) {
+				scanner.nextLine();
+				while (scanner.hasNext()) {
 					i++;
-					line = line.replace("&quot;","").replace("&amp;","");
+					line = scanner.nextLine().replace("&quot;", "").replace("&amp;", "");
 					String[] fields = line.split(";");
 					if (fields.length >= 8) {
 						PriamaPlatba pp = new PriamaPlatba();
@@ -105,30 +105,30 @@ public class ZiadostiService {
 						String strPlatba = fields[6];
 						try {
 							pp.setSuma(new BigDecimal(strPlatba));
-						}catch(NumberFormatException ex){
+						} catch (NumberFormatException ex) {
 							pp.setSuma(new BigDecimal("0.0000000000001"));
 							System.err.println("Invalid parsing bigdecimal: " + line + " riadok >" + i);
 						}
 						try {
 							pp.setRok(Integer.parseInt(fields[7]));
-						}catch(NumberFormatException ex){
+						} catch (NumberFormatException ex) {
 							pp.setRok(-1);
 							System.err.println("Invalid parsing of int: " + line + " riadok >" + i);
 						}
-
 						service.savePriamaPlatba(pp);
-
 					} else {
 						System.err.println("Invalid record: " + line + " riadok >" + i + " , " + fields.length);
 					}
 				}
-				br.close();
+				scanner.close();
 			} catch (Exception e) {
 				System.out.println(e);
 				e.printStackTrace();
 			}
+
 		}
-    }
+	}
+
 
     private Map<Long, ZiadostDiely> listZiadostDiely = new HashMap<>();
     private Map<Integer, Ziadatel> listZiadatelov = new HashMap<>();
@@ -227,8 +227,6 @@ public class ZiadostiService {
 
 	private String filterTextOf(PriamaPlatba priamaPlatba) {
 		String filterableText = Stream.of(priamaPlatba.getZiadatel()
-				// String.valueOf(review.getScore()),
-				// String.valueOf(review.getCount()),
 		).collect(Collectors.joining("\t"));
 		return filterableText.toLowerCase();
 	}
