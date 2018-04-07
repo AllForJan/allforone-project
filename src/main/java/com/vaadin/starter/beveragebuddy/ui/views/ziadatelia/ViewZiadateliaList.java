@@ -128,7 +128,7 @@ public class ViewZiadateliaList extends VerticalLayout {
 
 		for (int i = from; i <= to; i++) {
 			final int rok = i;
-			 grid.addColumn(ziadatel -> ziadatel.getVymeraZaRok(rok)).setHeader(rok +
+			 grid.addColumn(ziadatel -> new DecimalFormat("#,###").format(ziadatel.getVymeraZaRok(rok))+(ziadatel.getMaxRok()==rok?"<<+":"")).setHeader(rok +
 			 "").setWidth("3em")
 			 .setResizable(true);
 
