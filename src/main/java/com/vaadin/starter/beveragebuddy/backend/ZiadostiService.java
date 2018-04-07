@@ -219,8 +219,8 @@ public class ZiadostiService {
 			if (rokOd >= 2004 && rokOd <= 2017 && rokDo >= 2004 && rokDo <= 2017) {
 				return listZiadatelov.values().stream()
 						.filter(ziadatel -> filterTextOf(ziadatel).contains(normalizedFilter))
-						.sorted((r1, r2) -> r2.getMaxRozdielVymer(rokOd, rokDo, true)
-								.compareTo(r1.getMaxRozdielVymer(rokOd, rokDo, true)))
+						.sorted((r1, r2) -> r2.getMaxRozdielVymer(rokOd, rokDo)
+								.compareTo(r1.getMaxRozdielVymer(rokOd, rokDo)))
 						.collect(Collectors.toList());
 			}
 			return new ArrayList<>();

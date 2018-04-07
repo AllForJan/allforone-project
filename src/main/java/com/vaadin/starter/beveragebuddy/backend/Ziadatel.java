@@ -28,8 +28,8 @@ public class Ziadatel implements Serializable {
     private List<String> dalsieNazvy = new ArrayList<>();
     private String ico;
 
-    private BigDecimal maxRozdielVymer;
-    private int maxRok;
+    private int maxRok=-1;
+    private int minRok=-1;
 
     private BigDecimal[] roky = new BigDecimal[20];
 	
@@ -64,29 +64,34 @@ public class Ziadatel implements Serializable {
         return roky[rok - 2000];
     }
 
-    public BigDecimal getMaxRozdielVymer(int rokStart, int rokEnd, boolean forceUpdate) {
-        if ((maxRozdielVymer == null) || (forceUpdate)) {
-            int start = rokStart;
+    public BigDecimal getMaxRozdielVymer(int rokStart, int rokEnd) {
+
             BigDecimal max = new BigDecimal(0);
             BigDecimal rozdiel;
 
-            for (int i = start; i < rokEnd; i++) {
+            for (int i = rokStart; i < rokEnd; i++) {
                 rozdiel = getVymeraZaRok(i + 1).subtract(getVymeraZaRok(i));
-                if ((rozdiel.compareTo(max) > 0) && (i >= start)) {
+                if (rozdiel.compareTo(max) > 0) {
                     max = rozdiel;
                     maxRok = i;
                 }
             }
-            maxRozdielVymer = max;
-        }
-        return maxRozdielVymer;
+
+        return max;
     }
 
-    public int getMaxRok() {
-        if (maxRok == 0) {
-            getMaxRozdielVymer();
-        }
-        return maxRok;
+    public BigDecimal getMinRozdielVymer(int rokStart, int rokEnd) {
+            BigDecimal min = new BigDecimal(10000000);
+            BigDecimal rozdiel;
+
+            for (int i = rokStart; i < rokEnd; i++) {
+                rozdiel = getVymeraZaRok(i + 1).subtract(getVymeraZaRok(i));
+                if (rozdiel.compareTo(min) < 0) {
+                    min = rozdiel;
+                    minRok = i;
+                }
+            }
+        return min;
     }
 
 	void addZiadostDiely(ZiadostDiely zd) {

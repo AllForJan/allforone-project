@@ -126,13 +126,13 @@ public class ViewZiadateliaList extends VerticalLayout {
 				.setKey("ziadatel");
 
 		grid.addColumn(ziadatel -> new DecimalFormat("#,###").format(ziadatel.getMaxRozdielVymer(
-				Integer.parseInt(rokOdField.getValue()), Integer.parseInt(rokDoField.getValue()), true)))
+				Integer.parseInt(rokOdField.getValue()), Integer.parseInt(rokDoField.getValue()))))
 				.setHeader("Nárast výmery v ha").setResizable(true).setSortable(true)
 				.setComparator((person1, person2) -> person1
 						.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
-								Integer.parseInt(rokDoField.getValue()), true)
+								Integer.parseInt(rokDoField.getValue()))
 						.compareTo(person2.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
-								Integer.parseInt(rokDoField.getValue()), true)));
+								Integer.parseInt(rokDoField.getValue()))));
 
 
 		grid.addColumn(ziadatel -> ziadatel.getMaximumLokalit()).setHeader("Počet lokalít").setResizable(true)
