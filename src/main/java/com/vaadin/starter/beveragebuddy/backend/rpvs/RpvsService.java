@@ -75,24 +75,7 @@ public class RpvsService {
 				service.getPoberateliaSumar().add(sumar);
 			}
 
-			service.getPoberateliaSumar().sort(Comparator.comparing(PoberatelSumar::getSumaVsetkychPlatieb));
-
-			try (Writer out = new OutputStreamWriter(new FileOutputStream("data/poberatelia.txt"), "UTF8")) {
-				for (PoberatelSumar sumar : service.getPoberateliaSumar()) {
-					out.write(sumar.getPoberatel().toString() + "\t" + sumar.getSumaVsetkychPlatieb() + " EUR\n"
-							+ poberateloveFirmy.get(sumar.getPoberatel()) + "\n");
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			try (Writer out = new OutputStreamWriter(new FileOutputStream("data/ico_nazvy.txt"), "UTF8")) {
-				for (Ziadatel z : ZiadostiService.getInstance().findZiadatelov(null, 0, 0)) {
-					out.write(z.getIco() + "\t" + z.getDalsieNazvy() + "\n");
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		
 
 			return service;
 		}

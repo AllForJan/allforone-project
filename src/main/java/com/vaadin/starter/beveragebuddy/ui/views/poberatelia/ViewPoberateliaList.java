@@ -114,7 +114,7 @@ public class ViewPoberateliaList extends VerticalLayout {
 	private void createAllColumns() {
 
 		grid.addColumn(poberatel -> poberatel.getPoberatel().getName()).setHeader("Pobetateľ").setResizable(true)
-				.setSortable(true).setKey("pobetatel");
+				.setSortable(true).setKey("poberatel");
 		grid.addColumn(poberatel -> poberatel.getPoberatel().getStreet()).setHeader("Ulica").setResizable(true)
 				.setSortable(true);
 		grid.addColumn(poberatel -> poberatel.getPoberatel().getZipCode()).setHeader("PSČ").setResizable(true)
