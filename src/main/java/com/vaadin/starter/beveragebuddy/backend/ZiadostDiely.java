@@ -2,9 +2,6 @@ package com.vaadin.starter.beveragebuddy.backend;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Objects;
-
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
