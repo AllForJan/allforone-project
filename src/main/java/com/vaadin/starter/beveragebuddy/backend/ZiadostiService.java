@@ -54,12 +54,13 @@ public class ZiadostiService {
 					row.setZamestnanciStat(items[7]);
 					row.setZamestnanciPocet(StringUtils.isNotEmpty(items[8]) ? Integer.parseInt(items[8]) : -1);
 					row.setAdresa(items[9]);
-					row.setMesto(items[10]);
-					row.setOkres(items[11]);
-					row.setKraj(items[12]);
-					// items[13] & 14 to 18 not used (year 2018)
+					row.setPsc(items[10]);
+					row.setMesto(items[11]);
+					row.setOkres(items[12]);
+					row.setKraj(items[13]);
+					// items[14] & 15 to 19 not used (year 2018)
 					int year = 2017;
-					for (int i = 19, idx = 0; i < items.length - 1; i = i + 5) {
+					for (int i = 20, idx = 0; i < items.length - 1; i = i + 5) {
 						FinstatYearlyData yearData = new FinstatYearlyData();
 						yearData.setRok(year - idx++);
 						yearData.setTrzby(StringUtils.isNotEmpty(items[i]) ? Double.parseDouble(items[i]) : Double.NaN);
@@ -205,7 +206,7 @@ public class ZiadostiService {
 
 		return new ArrayList(listZiadostDiely.values());// .subList(0, 1000);
 	}
-
+	
 	public Ziadatel findZiadatel(String ico) {
 
 		return listZiadatelov.get(ico);
