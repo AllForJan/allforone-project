@@ -3,10 +3,11 @@ package com.vaadin.starter.beveragebuddy.backend;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
+import java.util.Map;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,8 +21,12 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 public class Ziadatel implements Serializable {
-
-    // URL;Ziadatel;ICO;Rok;Lokalita;Diel;Kultura;Vymera
+	
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8415408597743194967L;
+	// URL;Ziadatel;ICO;Rok;Lokalita;Diel;Kultura;Vymera
 
     private Long id;
     private String ziadatel;
@@ -32,8 +37,12 @@ public class Ziadatel implements Serializable {
     private int maxRok;
 
     private BigDecimal[] roky = new BigDecimal[20];
+    private Map<Integer, Integer> lokality = new HashMap<>();
+	
+	private FinstatData finstatData;
 
     private List<ZiadostDiely> listZiadostDiely = new ArrayList<>();
+
 
     public void setZiadatel(String aZiadatel) {
         if (!aZiadatel.equals(ziadatel)) {
@@ -41,8 +50,12 @@ public class Ziadatel implements Serializable {
         }
     }
 
-    public BigDecimal getVymeraZaRok(int rok) {
-        if (roky[rok - 2000] == null) {
+    public int getLokalityZaRok(int rok) {
+    	return 0;
+	}
+
+    public BigDecimal getVymeraZaRok(int rok){
+        if (roky[rok-2000] == null) {
             BigDecimal vymera = new BigDecimal(0);
             for (ZiadostDiely diely : listZiadostDiely) {
                 if (diely.getRok() == rok) {

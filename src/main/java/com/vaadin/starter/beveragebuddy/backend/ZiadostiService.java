@@ -1,15 +1,18 @@
 package com.vaadin.starter.beveragebuddy.backend;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileNotFoundException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.vaadin.starter.beveragebuddy.ui.converters.LocalDateToStringConverter;
+import org.apache.commons.lang3.StringUtils;
 
 public class ZiadostiService {
 
@@ -20,13 +23,65 @@ public class ZiadostiService {
 		}
 
 		private static ZiadostiService createDemoService() {
+			//Load FinStat data
+			Map<String, FinstatData> rows = new HashMap<>();
+			boolean firstLine = true;
+			int lineNr = 0;
+			try (Scanner finstatScanner = new Scanner(new File("data/finstat.csv"), "UTF-8")) {
+				while (finstatScanner.hasNextLine()) {
+					if (firstLine) {
+						finstatScanner.nextLine();
+						firstLine = false;
+						continue;
+					}
+					String line = finstatScanner.nextLine();
+					line = line.concat("xxx;");
+					String[] items = line.split(";");
+					
+					if (items.length == 1) {
+						continue;
+					}
+					
+					FinstatData row = new FinstatData();
+					row.setIco(items[0]);
+					row.setNazov(items[1]);
+					row.setHlavnaCinnost(items[2]);
+					row.setSkNace(items[3]);
+//					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//					row.setDatumVzniku(formatter.);
+//					row.setDatumZaniku(DateFormat.getDateInstance().parse(items[5]));
+					row.setDlhy(items[6]);
+					row.setZamestnanciStat(items[7]);
+					row.setZamestnanciPocet(StringUtils.isNotEmpty(items[8]) ? Integer.parseInt(items[8]) : -1);
+					row.setAdresa(items[9]);
+					row.setMesto(items[10]);
+					row.setOkres(items[11]);
+					row.setKraj(items[12]);
+					//items[13] & 14 to 18 not used (year 2018)
+					int year = 2017;
+					for (int i = 19, idx = 0; i < items.length - 1; i = i + 5) {
+						FinstatYearlyData yearData = new FinstatYearlyData();
+						yearData.setRok(year - idx++);
+						yearData.setTrzby(StringUtils.isNotEmpty(items[i]) ? Double.parseDouble(items[i]) : Double.NaN);
+						yearData.setVynosy(StringUtils.isNotEmpty(items[i + 1]) ? Double.parseDouble(items[i + 1]) : Double.NaN - yearData.getTrzby());
+						yearData.setZisk(StringUtils.isNotEmpty(items[i + 2]) ? Double.parseDouble(items[i + 2]) : Double.NaN);
+						yearData.setAktiva(StringUtils.isNotEmpty(items[i + 3]) ? Double.parseDouble(items[i + 3]) : Double.NaN);
+						yearData.setZamestnanciStat(items[i + 4]);
+						row.getRocneData().add(yearData);
+					}
+					rows.put(row.getIco(), row);
+				}
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			
+			
 			final ZiadostiService service = new ZiadostiService();
 			int rok;
 			BigDecimal vymera;
 
-			try {
+			try (Scanner scanner = new Scanner(new File("c:/tmp/dataFIIT/ziadostiDiely.csv"), "UTF-8")) {
 				// URL;Ziadatel;ICO;Rok;Lokalita;Diel;Kultura;Vymera
-				Scanner scanner = new Scanner(new File("c:/tmp/dataFIIT/ziadostiDiely.csv"), "UTF-8");
 				// scanner.useDelimiter("\n");
 
 				// while (scanner.hasNext()) {
@@ -63,6 +118,7 @@ public class ZiadostiService {
 							ziadatel = new Ziadatel();
 							ziadatel.setIco(zd.getIco());
 							ziadatel.setZiadatel(zd.getZiadatel());
+							ziadatel.setFinstatData(rows.get(ziadatel.getIco()));
 						}
 
 						ziadatel.getListZiadostDiely().add(zd);
@@ -73,7 +129,6 @@ public class ZiadostiService {
 						System.err.println("Invalid record: " + line + " riadok >" + i);
 					}
 				}
-				scanner.close();
 			} catch (Exception e) {
 				System.out.println(e);
 				e.printStackTrace();
