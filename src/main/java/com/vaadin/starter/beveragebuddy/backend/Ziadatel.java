@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,8 +25,9 @@ public class Ziadatel implements Serializable {
 
     private Long id;
     private String ziadatel;
-    private int ico;
-    
+    private List<String> dalsieNazvy = new ArrayList<>();
+    private String ico;
+
     private BigDecimal maxRozdielVymer;
     private int maxRok;
 
@@ -33,8 +35,14 @@ public class Ziadatel implements Serializable {
 
     private List<ZiadostDiely> listZiadostDiely = new ArrayList<>();
 
-    public BigDecimal getVymeraZaRok(int rok){
-        if (roky[rok-2000] == null) {
+    public void setZiadatel(String aZiadatel) {
+        if (!aZiadatel.equals(ziadatel)) {
+            dalsieNazvy.add(aZiadatel);
+        }
+    }
+
+    public BigDecimal getVymeraZaRok(int rok) {
+        if (roky[rok - 2000] == null) {
             BigDecimal vymera = new BigDecimal(0);
             for (ZiadostDiely diely : listZiadostDiely) {
                 if (diely.getRok() == rok) {
@@ -43,18 +51,18 @@ public class Ziadatel implements Serializable {
             }
             roky[rok - 2000] = vymera;
         }
-        return roky[rok-2000];
+        return roky[rok - 2000];
     }
 
-    public BigDecimal getMaxRozdielVymer(){
-        if (maxRozdielVymer==null) {
-            int start = 2001;
+    public BigDecimal getMaxRozdielVymer(int rokStart, int rokEnd, boolean forceUpdate) {
+        if ((maxRozdielVymer == null) || (forceUpdate)) {
+            int start = rokStart;
             BigDecimal max = new BigDecimal(0);
             BigDecimal rozdiel;
 
-            for (int i = start; i < 2018; i++) {
+            for (int i = start; i < rokEnd; i++) {
                 rozdiel = getVymeraZaRok(i + 1).subtract(getVymeraZaRok(i));
-                if (rozdiel.compareTo(max) > 0) {
+                if ((rozdiel.compareTo(max) > 0) && (i > start)) {
                     max = rozdiel;
                     maxRok = i;
                 }
@@ -64,8 +72,8 @@ public class Ziadatel implements Serializable {
         return maxRozdielVymer;
     }
 
-    public int getMaxRok(){
-        if (maxRok==0){
+    public int getMaxRok() {
+        if (maxRok == 0) {
             getMaxRozdielVymer();
         }
         return maxRok;
