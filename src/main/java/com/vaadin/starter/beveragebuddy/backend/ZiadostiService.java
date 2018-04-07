@@ -289,7 +289,7 @@ public class ZiadostiService {
 			if(mena.contains(priamaPlatba.getZiadatel())) {
 				if(priamaPlatba.getPsc() == null || ziadatel.getFinstatData() == null) {
 					filtered.add(priamaPlatba);
-				} else if(priamaPlatba.getPsc().equals(ziadatel.getFinstatData().getPsc())) {
+				} else if(priamaPlatba.getPsc().equals(ziadatel.getFinstatData().getPsc().replace("\"", ""))) {
 					filtered.add(priamaPlatba);
 				}
 			}
