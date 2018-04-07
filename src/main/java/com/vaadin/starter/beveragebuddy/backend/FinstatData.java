@@ -38,7 +38,7 @@ public class FinstatData {
 
 	private List<FinstatYearlyData> rocneData = new ArrayList<>();
 
-	private FinstatYearlyData getFinstatYearlyData(int rok) {
+	public FinstatYearlyData getFinstatYearlyData(int rok) {
 		for (FinstatYearlyData yd : rocneData) {
 			if (yd.getRok() == rok)
 				return yd;

@@ -99,4 +99,11 @@ public class Ziadatel implements Serializable {
     	lokalityPreRok.add(lokalita.toLowerCase());
     	lokality.put(rok, lokalityPreRok);
 	}
+	
+	public String getAdresaString() {
+		if(getFinstatData()!=null) {
+			return (getFinstatData().getAdresa()+", "+finstatData.getMesto()).replace("\"","");
+		}
+		return "";
+	}
 }

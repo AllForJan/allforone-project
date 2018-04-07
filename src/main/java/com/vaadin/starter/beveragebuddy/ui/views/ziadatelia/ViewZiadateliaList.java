@@ -1,6 +1,7 @@
 package com.vaadin.starter.beveragebuddy.ui.views.ziadatelia;
 
 import java.awt.geom.RoundRectangle2D;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -97,6 +98,7 @@ public class ViewZiadateliaList extends VerticalLayout {
 
 		viewToolbar.add(searchField, rokOdField, rokDoField);
 		add(viewToolbar);
+
 	}
 
 	private void addContent() {
@@ -104,13 +106,20 @@ public class ViewZiadateliaList extends VerticalLayout {
 		container.setClassName("view-container");
 		container.setAlignItems(Alignment.STRETCH);
 
-		grid.setSelectionMode(SelectionMode.MULTI);
-		grid.setMultiSort(true);
-		grid.setColumnReorderingAllowed(true);
+		grid.setSelectionMode(SelectionMode.SINGLE);
 
-		grid.addColumn(Ziadatel::getZiadatel).setHeader("Žiadateľ").setWidth("8em").setResizable(true)
-				.setKey("ziadatel").setSortable(true);
-		grid.addColumn(Ziadatel::getIco).setHeader("IČO").setResizable(true).setSortable(true);
+		// grid.addColumn(Ziadatel::getZiadatel).setHeader("Žiadateľ").setWidth("8em").setResizable(true)
+		// .setKey("ziadatel").setSortable(true);
+
+		// grid.addColumn(Ziadatel::getIco).setHeader("IČO").setResizable(true).setSortable(true);
+
+		grid.addColumn(TemplateRenderer.<Ziadatel>of("<div><b>[[item.name]]</b><br><a target=\"_blank\" href=\"http://www.finstat.sk/[[item.ico]]\">[[item.ico]]</a></div>")
+				.withProperty("name", ziadatel -> ziadatel.getZiadatel())
+				.withProperty("ico", ziadatel -> ziadatel.getIco()))
+				// .withProperty("adr", ziadatel ->
+				// ziadatel.getAdresaString())).setHeader("Žiadateľ").setWidth("12em")
+				.setKey("ziadatel");
+
 		// grid.addColumn(new
 		// ComponentRenderer<>(this::createEditButton)).setFlexGrow(0);
 
@@ -119,16 +128,33 @@ public class ViewZiadateliaList extends VerticalLayout {
 
 		for (int i = from; i <= to; i++) {
 			final int rok = i;
-			grid.addColumn(ziadatel -> ziadatel.getVymeraZaRok(rok)).setHeader(rok + "").setWidth("3em")
-					.setResizable(true);
+			 grid.addColumn(ziadatel -> ziadatel.getVymeraZaRok(rok)).setHeader(rok +
+			 "").setWidth("3em")
+			 .setResizable(true);
+
+			/*
+			grid.addColumn(TemplateRenderer
+					.<Ziadatel>of(
+							"<div><b>[[item.ha]]</b> <small>[[item.ks]]</small></br><small>[[item.pz]]</small></div>")
+					.withProperty("ha", ziadatel -> new DecimalFormat("# ###").format(ziadatel.getVymeraZaRok(rok))));
+					.withProperty("ks", ziadatel -> ziadatel.getLokalityZaRok(rok)).withProperty("pz",
+						ziadatel -> (ziadatel.getFinstatData() != null
+									&& ziadatel.getFinstatData().getFinstatYearlyData(rok) != null)
+											? ziadatel.getFinstatData().getFinstatYearlyData(rok).getZamestnanciStat()
+													.replace("zamestnancov", "zm.")
+											: "n/a"))
+					.setWidth("4em");
+*/
 		}
 
-		grid.addColumn(ziadatel -> ziadatel.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
-				Integer.parseInt(rokDoField.getValue()), true)).setHeader("Indikátok výmer").setResizable(true)
-				.setSortable(true).setComparator((person1, person2) -> person1.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
-						Integer.parseInt(rokDoField.getValue()), true)
-		                .compareTo(person2.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
-		        				Integer.parseInt(rokDoField.getValue()), true)));
+		grid.addColumn(ziadatel -> new DecimalFormat("#,###").format(ziadatel.getMaxRozdielVymer(
+				Integer.parseInt(rokOdField.getValue()), Integer.parseInt(rokDoField.getValue()), true)))
+				.setHeader("Nárast").setResizable(true).setSortable(true)
+				.setComparator((person1, person2) -> person1
+						.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
+								Integer.parseInt(rokDoField.getValue()), true)
+						.compareTo(person2.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
+								Integer.parseInt(rokDoField.getValue()), true)));
 
 		container.add(header, grid);
 
@@ -155,7 +181,8 @@ public class ViewZiadateliaList extends VerticalLayout {
 			} else {
 				header.setText("Žiadatelia");
 			}
-			grid.getColumnByKey("ziadatel").setFooter("" + list.size());
+			grid.getColumnByKey("ziadatel").setFooter("" + list.size()).setHeader("Žiadateľ");
+
 		}
 	}
 
