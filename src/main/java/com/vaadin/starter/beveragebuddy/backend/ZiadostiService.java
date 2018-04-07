@@ -50,7 +50,7 @@ public class ZiadostiService {
 					row.setZamestnanciStat(items[7]);
 					row.setZamestnanciPocet(StringUtils.isNotEmpty(items[8]) ? Integer.parseInt(items[8]) : -1);
 					row.setAdresa(items[9]);
-					row.setPsc(items[10]);
+					row.setPsc(StringUtils.leftPad(items[10].replace(" ", ""), 5, "0"));
 					row.setMesto(items[11]);
 					row.setOkres(items[12]);
 					row.setKraj(items[13]);
@@ -153,7 +153,8 @@ public class ZiadostiService {
 						PriamaPlatba pp = new PriamaPlatba();
 						pp.setUrl(fields[0]);
 						pp.setZiadatel(fields[1]);
-						pp.setPsc(fields[2]);
+						String psc = fields[2].replace(" ", "");
+						pp.setPsc(StringUtils.leftPad(psc, 5, "0"));
 						pp.setObec(fields[3]);
 						pp.setOpatrenie(fields[4]);
 						pp.setKodOpatrenia(fields[5]);
