@@ -35,7 +35,7 @@ public class RpvsService {
 		private static RpvsService createDemoService() {
 
 			ZiadostiService.getInstance();
-			
+
 			Map<String, List<PoberatelVyhod>> json = new HashMap<>();
 			final ObjectMapper mapper = new ObjectMapper();
 			try {
@@ -80,16 +80,15 @@ public class RpvsService {
 			}
 
 			poberateliaCelkovo.sort(Comparator.comparing(PoberatelSumar::getSumaVsetkychPlatieb));
-			
+
 			try (Writer out = new OutputStreamWriter(new FileOutputStream("data/poberatelia.txt"), "UTF8")) {
-				for (PoberatelSumar sumar: poberateliaCelkovo) {
-					out.write(sumar.getPoberatel().toString() + "\t" + sumar.getSumaVsetkychPlatieb() + " EUR\n" 
+				for (PoberatelSumar sumar : poberateliaCelkovo) {
+					out.write(sumar.getPoberatel().toString() + "\t" + sumar.getSumaVsetkychPlatieb() + " EUR\n"
 							+ poberateloveFirmy.get(sumar.getPoberatel()) + "\n");
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
 
 			try (Writer out = new OutputStreamWriter(new FileOutputStream("data/ico_nazvy.txt"), "UTF8")) {
 				for (Ziadatel z : ZiadostiService.getInstance().findZiadatelov(null, 0, 0)) {
@@ -150,6 +149,21 @@ public class RpvsService {
 		} else {
 			return new ArrayList(listPriamychPlatieb.values());
 		}
+	}
+
+	public List<PoberatelSumar> findPoberatelov(String filter, int rokOd, int rokDo) {
+
+		/*
+		 * if (filter != null) { String normalizedFilter = filter.toLowerCase();
+		 * 
+		 * if (rokOd >= 2004 && rokOd <= 2017 && rokDo >= 2004 && rokDo <= 2017) {
+		 * return listZiadatelov.values().stream() .filter(ziadatel ->
+		 * filterTextOf(ziadatel).contains(normalizedFilter)) .sorted((r1, r2) ->
+		 * r2.getMaxRozdielVymer(rokOd, rokDo) .compareTo(r1.getMaxRozdielVymer(rokOd,
+		 * rokDo))) .collect(Collectors.toList()); } return new ArrayList<>(); } else {
+		 * return new ArrayList(listZiadatelov.values()); }
+		 */
+		return null;
 	}
 
 	private void savePriamaPlatba(PriamaPlatba pp) {
