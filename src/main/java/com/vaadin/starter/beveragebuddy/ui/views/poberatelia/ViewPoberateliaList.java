@@ -23,7 +23,7 @@ import com.vaadin.starter.beveragebuddy.backend.Ziadatel;
 import com.vaadin.starter.beveragebuddy.backend.ZiadostiService;
 import com.vaadin.starter.beveragebuddy.ui.MainLayout;
 
-@Route(value = "ziadatelia", layout = MainLayout.class)
+@Route(value = "poberatelia", layout = MainLayout.class)
 @PageTitle("Žiadatelia List")
 public class ViewPoberateliaList extends VerticalLayout {
 
