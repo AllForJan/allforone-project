@@ -26,24 +26,21 @@ public class PoberatelSumar {
 	private PoberatelVyhod poberatel;
 	private List<FirmaPlatby> platbyFirmam = new ArrayList<>();
 	private BigDecimal sumaVsetkychPlatieb;
-	private Map<Integer, BigDecimal> sumaPlatieb = new HashMap<>();
 	
 	public void initializeSumaVsetkychPlatieb() {
 		BigDecimal val = new BigDecimal(0.0);
 		for (FirmaPlatby firma: this.platbyFirmam) {
-			for (PriamaPlatba platba: firma.getPriamePlatby()) {
-				BigDecimal zaRok = this.sumaPlatieb.get(platba.getRok());
-				if (zaRok == null) {
-					zaRok = new BigDecimal("0.0");
-				}
-				this.sumaPlatieb.put(platba.getRok(), zaRok.add(platba.getSuma()));
-				val = val.add(platba.getSuma());
-			}
+			firma.initializeSumaVsetkychPlatieb();
+			val = val.add(firma.getSumaVsetkychPlatieb());
 		}
 		this.sumaVsetkychPlatieb = val;
 	}
 	
 	public BigDecimal getSumaPlatieb(final int rok) {
-		return this.sumaPlatieb.get(rok);
+		BigDecimal val = new BigDecimal("0.0");
+		for (FirmaPlatby fp: this.platbyFirmam) {
+			val = val.add(fp.getSumaPlatieb(rok));
+		}
+		return val;
 	}
 }
