@@ -27,7 +27,7 @@ public class ZiadostiService {
 			Map<String, FinstatData> rows = new HashMap<>();
 			boolean firstLine = true;
 			int lineNr = 0;
-			try (Scanner finstatScanner = new Scanner(new File("c:\\tmp\\finstat.csv"), "UTF-8")) {
+			try (Scanner finstatScanner = new Scanner(new File("data/finstat.csv"), "UTF-8")) {
 				while (finstatScanner.hasNextLine()) {
 					if (firstLine) {
 						finstatScanner.nextLine();
