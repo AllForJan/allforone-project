@@ -43,6 +43,9 @@ public class FirmaPlatby {
 	}
 
 	public BigDecimal getSumaPlatieb(final int rok) {
-		return this.sumaPlatieb.get(rok);
+		BigDecimal suma = this.sumaPlatieb.get(rok);
+		if (suma == null)
+			return BigDecimal.ZERO;
+		return suma;
 	}
 }

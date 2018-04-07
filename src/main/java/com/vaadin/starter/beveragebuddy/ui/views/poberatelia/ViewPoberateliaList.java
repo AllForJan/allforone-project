@@ -1,5 +1,6 @@
 package com.vaadin.starter.beveragebuddy.ui.views.poberatelia;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
@@ -10,6 +11,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -117,6 +119,8 @@ public class ViewPoberateliaList extends VerticalLayout {
 
 		grid.addColumn(poberatel -> poberatel.getPoberatel().getName()).setHeader("Pobetateľ").setResizable(true)
 				.setSortable(true).setKey("poberatel");
+		grid.addColumn(poberatel -> poberatel.getPlatbyFirmam().size()).setHeader("Počet Firiem").setResizable(true)
+		.setSortable(true);
 		grid.addColumn(poberatel -> poberatel.getPoberatel().getStreet()).setHeader("Ulica").setResizable(true)
 				.setSortable(true);
 		grid.addColumn(poberatel -> poberatel.getPoberatel().getZipCode()).setHeader("PSČ").setResizable(true)
@@ -128,17 +132,19 @@ public class ViewPoberateliaList extends VerticalLayout {
 
 		createYearColumns();
 
-		grid.addColumn(poberatel -> poberatel.getSumaVsetkychPlatieb()).setHeader("Platby Celkom").setResizable(true)
+		grid.addColumn(poberatel -> new DecimalFormat("#,##0.00").format(poberatel.getSumaVsetkychPlatieb())).setHeader("Platby Celkom").setResizable(true)
 				.setSortable(true);
 
 		grid.setItemDetailsRenderer(new ComponentRenderer<>(poberatel -> {
 			VerticalLayout layout = new VerticalLayout();
 			Grid<FirmaPlatby> g = new Grid<>();
 			g.addColumn(firma -> firma.getNazov()).setHeader("Firma").setKey("pocet");
-			g.addColumn(firma -> firma.getIco()).setHeader("IČO");
-			g.addColumn(firma -> firma.getSumaPlatieb(2015)).setHeader("Platby 2015");
-			g.addColumn(firma -> firma.getSumaPlatieb(2016)).setHeader("Platby 2016");
-			g.addColumn(firma -> firma.getSumaPlatieb(2016)).setHeader("Platby Celkom");
+			//g.addColumn(firma -> firma.getIco()).setHeader("IČO");
+			g.addColumn(TemplateRenderer.<FirmaPlatby>of("<div><a target=\"_blank\" href=\"http://www.finstat.sk/[[item.ico]]\">[[item.ico]]</a></div>")
+					.withProperty("ico", firma -> firma.getIco())).setHeader("IČO");;
+			g.addColumn(firma -> new DecimalFormat("#,##0.00").format(firma.getSumaPlatieb(2015))).setHeader("Platby 2015");
+			g.addColumn(firma -> new DecimalFormat("#,##0.00").format(firma.getSumaPlatieb(2016))).setHeader("Platby 2016");
+			g.addColumn(firma -> new DecimalFormat("#,##0.00").format(firma.getSumaVsetkychPlatieb())).setHeader("Platby Celkom");
 			g.setItems(poberatel.getPlatbyFirmam());
 			g.setItemDetailsRenderer(new ComponentRenderer<>(firma -> {
 				VerticalLayout layout2 = new VerticalLayout();
@@ -148,7 +154,7 @@ public class ViewPoberateliaList extends VerticalLayout {
 				g2.addColumn(platba -> platba.getObec()).setHeader("Obec");
 				g2.addColumn(platba -> platba.getKodOpatrenia()).setHeader("Opatrenie");
 				g2.addColumn(platba -> platba.getRok()).setHeader("Rok");
-				g2.addColumn(platba -> platba.getSuma()).setHeader("Platba");
+				g2.addColumn(platba -> new DecimalFormat("#,##0.00").format(platba.getSuma())).setHeader("Platba");
 				g2.setItems(firma.getPriamePlatby());
 				
 				
@@ -175,7 +181,7 @@ public class ViewPoberateliaList extends VerticalLayout {
 	private void createYearColumns() {
 		for (int i = from; i <= to; i++) {
 			final int rok = i;
-			grid.addColumn(ziadatel -> ziadatel.getSumaPlatieb(rok)).setHeader("Platby " + rok).setKey(rok + "")
+			grid.addColumn(ziadatel -> new DecimalFormat("#,##0.00").format(ziadatel.getSumaPlatieb(rok))).setHeader("Platby " + rok).setKey(rok + "")
 					.setWidth("3em").setResizable(true);
 
 		}
