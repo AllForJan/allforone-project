@@ -117,7 +117,7 @@ public class RpvsService {
 			String normalizedFilter = filter.toLowerCase();
 
 			if (rokOd >= 2004 && rokOd <= 2017 && rokDo >= 2004 && rokDo <= 2017) {
-				this.poberateliaSumar.stream()
+				return this.poberateliaSumar.stream()
 						.filter(poberatelSumar -> filterTextOf(poberatelSumar).contains(normalizedFilter))
 						.sorted((r1, r2) -> r2.getSumaVsetkychPlatieb().compareTo(r1.getSumaVsetkychPlatieb()))
 						.collect(Collectors.toList());
