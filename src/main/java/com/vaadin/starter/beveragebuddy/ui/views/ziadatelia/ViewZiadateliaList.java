@@ -2,6 +2,9 @@ package com.vaadin.starter.beveragebuddy.ui.views.ziadatelia;
 
 import java.awt.geom.RoundRectangle2D;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
@@ -52,7 +55,7 @@ public class ViewZiadateliaList extends VerticalLayout {
 		rokOdField.setValue("2004");
 		rokDoField.setValue("2017");
 		updateView();
-		
+
 	}
 
 	private void initView() {
@@ -73,10 +76,11 @@ public class ViewZiadateliaList extends VerticalLayout {
 		rokOdField.addClassName("view-toolbar__search-field");
 		rokOdField.addValueChangeListener(e -> updateView());
 		rokOdField.setValueChangeMode(ValueChangeMode.EAGER);
+
 		rokOdField.setPattern("[0-9]*");
 		rokOdField.setPreventInvalidInput(true);
 		rokOdField.setWidth("100px");
-		
+
 		rokDoField.setPrefixComponent(new Icon("lumo", "Do"));
 		rokDoField.addClassName("view-toolbar__search-field");
 		rokDoField.addValueChangeListener(e -> updateView());
@@ -84,9 +88,8 @@ public class ViewZiadateliaList extends VerticalLayout {
 		rokDoField.setPattern("[0-9]*");
 		rokDoField.setPreventInvalidInput(true);
 		rokDoField.setWidth("100px");
-		
 
-		// Button newButton = new Button("New category", new Icon("lumo", "plus"));
+		// Button newButton = new Button(adaťNew category", new Icon("lumo", "search"));
 		// newButton.getElement().setAttribute("theme", "primary");
 		// newButton.addClassName("view-toolbar__button");
 		// newButton.addClickListener(e -> form.open(new Category(),
@@ -120,8 +123,13 @@ public class ViewZiadateliaList extends VerticalLayout {
 					.setResizable(true);
 		}
 
-		grid.addColumn(Ziadatel::getMaxRozdielVymer).setHeader("Indikátok výmer").setResizable(true).setSortable(true);
-		grid.addColumn(new ComponentRenderer<>(ziadatel -> {
+		grid.addColumn(ziadatel -> ziadatel.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
+				Integer.parseInt(rokDoField.getValue()), true)).setHeader("Indikátok výmer").setResizable(true)
+				.setSortable(true);
+
+		grid.addColumn(new ComponentRenderer<>(ziadatel ->
+
+		{
 
 			if (ziadatel.getMaxRozdielVymer() != null) {
 				return new Icon(VaadinIcons.CIRCLE);
@@ -129,9 +137,10 @@ public class ViewZiadateliaList extends VerticalLayout {
 			} else {
 				return new Icon(VaadinIcons.CIRCLE);
 			}
-		})).setHeader("Gender");
+		})).setHeader("");
 
 		container.add(header, grid);
+
 		add(container);
 	}
 
@@ -145,15 +154,18 @@ public class ViewZiadateliaList extends VerticalLayout {
 	}
 
 	private void updateView() {
-		List<Ziadatel> list = ZiadostiService.getInstance().findZiadatelov(searchField.getValue());
-		grid.setItems(list);
+		if (!StringUtils.isEmpty(rokDoField.getValue()) && !StringUtils.isEmpty(rokOdField.getValue())) {
+			List<Ziadatel> list = ZiadostiService.getInstance().findZiadatelov(searchField.getValue(),
+					Integer.parseInt(rokOdField.getValue()), Integer.parseInt(rokDoField.getValue()));
+			grid.setItems(list);
 
-		if (searchField.getValue().length() > 0) {
-			header.setText("Search for “" + searchField.getValue() + "”");
-		} else {
-			header.setText("Žiadatelia");
+			if (searchField.getValue().length() > 0) {
+				header.setText("Search for “" + searchField.getValue() + "”");
+			} else {
+				header.setText("Žiadatelia");
+			}
+			grid.getColumnByKey("ziadatel").setFooter("" + list.size());
 		}
-		grid.getColumnByKey("ziadatel").setFooter("" + list.size());
 	}
 
 }

@@ -44,6 +44,7 @@ public class Ziadatel implements Serializable {
         if (!aZiadatel.equals(ziadatel)) {
             dalsieNazvy.add(aZiadatel);
         }
+        this.ziadatel = aZiadatel;
     }
 
     public int getLokalityZaRok(int rok) {
@@ -71,7 +72,7 @@ public class Ziadatel implements Serializable {
 
             for (int i = start; i < rokEnd; i++) {
                 rozdiel = getVymeraZaRok(i + 1).subtract(getVymeraZaRok(i));
-                if ((rozdiel.compareTo(max) > 0) && (i > start)) {
+                if ((rozdiel.compareTo(max) > 0) && (i >= start)) {
                     max = rozdiel;
                     maxRok = i;
                 }
