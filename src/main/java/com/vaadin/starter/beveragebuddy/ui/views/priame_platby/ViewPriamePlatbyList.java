@@ -69,13 +69,13 @@ public class ViewPriamePlatbyList extends VerticalLayout {
         grid.setColumnReorderingAllowed(true);
 
         grid.addColumn(PriamaPlatba::getZiadatel).setHeader("Žiadateľ").setWidth("8em").setResizable(true).setKey("ziadatel")
-                .setSortable(true);
-        grid.addColumn(PriamaPlatba::getPsc).setHeader("PSČ").setResizable(true).setSortable(true);
+                .setSortable(true).setComparator(PriamaPlatba::getZiadatel);
+        grid.addColumn(PriamaPlatba::getPsc).setHeader("PSČ").setResizable(true).setSortable(true).setComparator(PriamaPlatba::getPsc);
 
-        grid.addColumn(PriamaPlatba::getObec).setHeader("Obec").setResizable(true).setSortable(true);
-        grid.addColumn(PriamaPlatba::getKodOpatrenia).setHeader("Kod opatrenia").setResizable(true).setSortable(true);
-        grid.addColumn(PriamaPlatba::getSuma).setHeader("Suma").setResizable(true).setSortable(true);
-        grid.addColumn(PriamaPlatba::getRok).setHeader("Rok").setResizable(true).setSortable(true);
+        grid.addColumn(PriamaPlatba::getObec).setHeader("Obec").setResizable(true).setSortable(true).setComparator(PriamaPlatba::getObec);
+        grid.addColumn(PriamaPlatba::getKodOpatrenia).setHeader("Kod opatrenia").setResizable(true).setSortable(true).setComparator(PriamaPlatba::getKodOpatrenia);
+        grid.addColumn(PriamaPlatba::getSuma).setHeader("Suma").setResizable(true).setSortable(true).setComparator(PriamaPlatba::getSuma);
+        grid.addColumn(PriamaPlatba::getRok).setHeader("Rok").setResizable(true).setSortable(true).setComparator(PriamaPlatba::getRok);
         grid.addColumn(new ComponentRenderer<>(this::createEditButton)).setFlexGrow(0);
 
         //grid.addColumn(TemplateRenderer.<Ziadatel>of("<b>[[item.listZiadostDiely.size]]</b>")

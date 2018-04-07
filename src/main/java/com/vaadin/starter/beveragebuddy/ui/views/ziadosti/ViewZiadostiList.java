@@ -79,13 +79,13 @@ public class ViewZiadostiList extends VerticalLayout {
 		grid.setColumnReorderingAllowed(true);
 
 		grid.addColumn(ZiadostDiely::getZiadatel).setHeader("Žiadateľ").setWidth("8em").setResizable(true)
-				.setKey("ziadatel");
-		grid.addColumn(ZiadostDiely::getIco).setHeader("IČO").setResizable(true);
-		grid.addColumn(ZiadostDiely::getRok).setHeader("Rok").setResizable(true);
-		grid.addColumn(ZiadostDiely::getLokalita).setHeader("Lokalita").setResizable(true);
-		grid.addColumn(ZiadostDiely::getDiel).setHeader("Diel").setResizable(true);
-		grid.addColumn(ZiadostDiely::getKultura).setHeader("Kultura").setResizable(true);
-		grid.addColumn(ZiadostDiely::getVymera).setHeader("Vymera").setResizable(true);
+				.setKey("ziadatel").setSortable(true).setComparator(ZiadostDiely::getZiadatel);
+		grid.addColumn(ZiadostDiely::getIco).setHeader("IČO").setResizable(true).setSortable(true).setComparator(ZiadostDiely::getIco);
+		grid.addColumn(ZiadostDiely::getRok).setHeader("Rok").setResizable(true).setSortable(true).setComparator(ZiadostDiely::getRok);
+		grid.addColumn(ZiadostDiely::getLokalita).setHeader("Lokalita").setResizable(true).setSortable(true).setComparator(ZiadostDiely::getLokalita);
+		grid.addColumn(ZiadostDiely::getDiel).setHeader("Diel").setResizable(true).setSortable(true).setComparator(ZiadostDiely::getDiel);
+		grid.addColumn(ZiadostDiely::getKultura).setHeader("Kultura").setResizable(true).setSortable(true).setComparator(ZiadostDiely::getKultura);
+		grid.addColumn(ZiadostDiely::getVymera).setHeader("Vymera").setResizable(true).setSortable(true).setComparator(ZiadostDiely::getVymera);
 
 		grid.addColumn(new ComponentRenderer<>(this::createEditButton)).setFlexGrow(0);
 
