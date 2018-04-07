@@ -119,10 +119,9 @@ public class ZiadostiService {
 						if (ziadatel == null) {
 							ziadatel = new Ziadatel();
 							ziadatel.setIco(zd.getIco());
-							ziadatel.setZiadatel(zd.getZiadatel());
 							ziadatel.setFinstatData(rows.get(ziadatel.getIco()));
 						}
-
+						ziadatel.setZiadatel(zd.getZiadatel());
 						ziadatel.addZiadostDiely(zd);
 
 						service.saveZiadatel(ziadatel);
