@@ -93,7 +93,6 @@ public class ZiadostiService {
 					String[] fields = line.split(";");
 					if (fields.length >= 8) {
 						ZiadostDiely zd = new ZiadostDiely();
-						zd.setUrl(fields[0]);
 						zd.setZiadatel(fields[1]);
 						if (fields[2].equals("")) {
 							// ak ico neexistuje, daj tam meno osoby
@@ -151,7 +150,6 @@ public class ZiadostiService {
 					String[] fields = line.split(";");
 					if (fields.length >= 8) {
 						PriamaPlatba pp = new PriamaPlatba();
-						pp.setUrl(fields[0]);
 						pp.setZiadatel(fields[1]);
 						String psc = fields[2].replace(" ", "");
 						pp.setPsc(StringUtils.leftPad(psc, 5, "0"));

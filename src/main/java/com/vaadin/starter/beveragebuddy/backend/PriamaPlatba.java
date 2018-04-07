@@ -13,7 +13,6 @@ public class PriamaPlatba implements Serializable {
     //URL;Meno;PSC;Obec;Opatrenie;Opatrenie - Kod;Suma;Rok
 
     private Long id;
-    private String url;
     private String ziadatel;
     private String psc;
     private String obec; //toto sa da prepojit so suborom kody_administrativneho_delenia.csv na atribut NAM

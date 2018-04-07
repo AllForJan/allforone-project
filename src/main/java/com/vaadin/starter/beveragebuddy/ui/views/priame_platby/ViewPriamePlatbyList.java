@@ -39,8 +39,7 @@ public class ViewPriamePlatbyList extends VerticalLayout {
     private void initView() {
         addClassName("categories-list");
         setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.STRETCH);
-        
-        RpvsService.getInstance();
+
     }
 
     private void addSearchBar() {
