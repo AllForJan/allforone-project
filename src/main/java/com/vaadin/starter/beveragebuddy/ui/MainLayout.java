@@ -32,6 +32,7 @@ public class MainLayout extends Div implements RouterLayout,
     private RouterLink ziadatelia;
     private RouterLink ziadosti;
     private RouterLink platby;
+    private RouterLink poberatelia;
     
 
     public MainLayout() {
@@ -51,16 +52,15 @@ public class MainLayout extends Div implements RouterLayout,
         ziadatelia.addClassName("main-layout__nav-item");
 
         platby = new RouterLink(null, ViewPriamePlatbyList.class);
-        platby.add(new Icon(VaadinIcons.LIST), new Text("Platby"));
+        platby.add(new Icon(VaadinIcons.EURO), new Text("Platby"));
         platby.addClassName("main-layout__nav-item");
-        
-        
-        
-        Div navigation = new Div(ziadatelia, ziadosti, platby, categories);
-        
-        
-        
-        
+
+        poberatelia = new RouterLink(null, ViewPriamePlatbyList.class);
+        poberatelia.add(new Icon(VaadinIcons.DIAMOND), new Text("Poberatelia"));
+        poberatelia.addClassName("main-layout__nav-item");
+
+        Div navigation = new Div(ziadatelia, poberatelia, ziadosti, platby, categories);
+
         navigation.addClassName("main-layout__nav");
 
         Div header = new Div(title, navigation);
@@ -77,13 +77,13 @@ public class MainLayout extends Div implements RouterLayout,
         boolean ziadostiActive = segment.equals(ziadosti.getHref());
         boolean ziadateliaActive = segment.equals(ziadatelia.getHref());
         boolean platbyActive = segment.equals(platby.getHref());
+        boolean poberateliaActive = segment.equals(poberatelia.getHref());
 
         ziadatelia.setClassName(ACTIVE_ITEM_STYLE, ziadateliaActive);
         ziadosti.setClassName(ACTIVE_ITEM_STYLE, ziadostiActive);
         categories.setClassName(ACTIVE_ITEM_STYLE, categoriesActive);
         platby.setClassName(ACTIVE_ITEM_STYLE, platbyActive);
-        
-        
+        poberatelia.setClassName(ACTIVE_ITEM_STYLE, poberateliaActive);
     }
 
     @Override
