@@ -106,4 +106,8 @@ public class Ziadatel implements Serializable {
 		}
 		return "";
 	}
+
+    public Integer getMaximumLokalit() {
+        return lokality.entrySet().stream().map(lok -> lok.getValue().size()).max(Integer::compareTo).orElse(0);
+    }
 }

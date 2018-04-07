@@ -1,9 +1,11 @@
 package com.vaadin.starter.beveragebuddy.ui.views.ziadatelia;
 
-import java.awt.geom.RoundRectangle2D;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
 
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.data.renderer.TemplateRenderer;
 import org.apache.commons.lang3.StringUtils;
 
 import com.vaadin.flow.component.button.Button;
@@ -12,25 +14,14 @@ import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcons;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.data.renderer.TemplateRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.starter.beveragebuddy.backend.Category;
-import com.vaadin.starter.beveragebuddy.backend.CategoryService;
-import com.vaadin.starter.beveragebuddy.backend.Review;
-import com.vaadin.starter.beveragebuddy.backend.ReviewService;
 import com.vaadin.starter.beveragebuddy.backend.Ziadatel;
 import com.vaadin.starter.beveragebuddy.backend.ZiadostiService;
-import com.vaadin.starter.beveragebuddy.backend.ZiadostDiely;
 import com.vaadin.starter.beveragebuddy.ui.MainLayout;
-import com.vaadin.starter.beveragebuddy.ui.common.AbstractEditorDialog;
 
 @Route(value = "ziadatelia", layout = MainLayout.class)
 @PageTitle("Žiadatelia List")
@@ -40,9 +31,13 @@ public class ViewZiadateliaList extends VerticalLayout {
 
 	private final TextField rokOdField = new TextField("", "Rok od");
 	private final TextField rokDoField = new TextField("", "Rok do");
+	private final ComboBox<String> comboBox = new ComboBox<>("Indikátor", Arrays.asList("suma hektárov", "pocet lokalit"));
 
 	private final H2 header = new H2("Žiadatelia");
 	private final Grid<Ziadatel> grid = new Grid<>();
+
+	private final int from = 2004;
+	private final int to = 2017;
 
 	// private final ZiadostiEditorDialog form = new
 	// ZiadostiEditorDialog(this::save, this::delete);
@@ -90,6 +85,13 @@ public class ViewZiadateliaList extends VerticalLayout {
 		rokDoField.setPreventInvalidInput(true);
 		rokDoField.setWidth("100px");
 
+		comboBox.setValue("suma hektárov");
+		comboBox.addValueChangeListener((combo) -> {
+			if(!combo.getOldValue().equals(combo.getValue())) {
+				comboBoxChanged(combo.getValue());
+			}
+		});
+
 		// Button newButton = new Button(adaťNew category", new Icon("lumo", "search"));
 		// newButton.getElement().setAttribute("theme", "primary");
 		// newButton.addClassName("view-toolbar__button");
@@ -98,7 +100,7 @@ public class ViewZiadateliaList extends VerticalLayout {
 
 		viewToolbar.add(searchField, rokOdField, rokDoField);
 		add(viewToolbar);
-
+		add(comboBox);
 	}
 
 	private void addContent() {
@@ -108,11 +110,14 @@ public class ViewZiadateliaList extends VerticalLayout {
 
 		grid.setSelectionMode(SelectionMode.SINGLE);
 
-		// grid.addColumn(Ziadatel::getZiadatel).setHeader("Žiadateľ").setWidth("8em").setResizable(true)
-		// .setKey("ziadatel").setSortable(true);
+		createAllColumns();
 
-		// grid.addColumn(Ziadatel::getIco).setHeader("IČO").setResizable(true).setSortable(true);
+		container.add(header, grid);
 
+		add(container);
+	}
+
+	private void createAllColumns() {
 		grid.addColumn(TemplateRenderer.<Ziadatel>of("<div><b>[[item.name]]</b><br><a target=\"_blank\" href=\"http://www.finstat.sk/[[item.ico]]\">[[item.ico]]</a></div>")
 				.withProperty("name", ziadatel -> ziadatel.getZiadatel())
 				.withProperty("ico", ziadatel -> ziadatel.getIco()))
@@ -120,45 +125,38 @@ public class ViewZiadateliaList extends VerticalLayout {
 				// ziadatel.getAdresaString())).setHeader("Žiadateľ").setWidth("12em")
 				.setKey("ziadatel");
 
-		// grid.addColumn(new
-		// ComponentRenderer<>(this::createEditButton)).setFlexGrow(0);
-
-		int from = 2004;
-		int to = 2017;
-
-		for (int i = from; i <= to; i++) {
-			final int rok = i;
-			 grid.addColumn(ziadatel -> ziadatel.getVymeraZaRok(rok)).setHeader(rok +
-			 "").setWidth("3em")
-			 .setResizable(true);
-
-			/*
-			grid.addColumn(TemplateRenderer
-					.<Ziadatel>of(
-							"<div><b>[[item.ha]]</b> <small>[[item.ks]]</small></br><small>[[item.pz]]</small></div>")
-					.withProperty("ha", ziadatel -> new DecimalFormat("# ###").format(ziadatel.getVymeraZaRok(rok))));
-					.withProperty("ks", ziadatel -> ziadatel.getLokalityZaRok(rok)).withProperty("pz",
-						ziadatel -> (ziadatel.getFinstatData() != null
-									&& ziadatel.getFinstatData().getFinstatYearlyData(rok) != null)
-											? ziadatel.getFinstatData().getFinstatYearlyData(rok).getZamestnanciStat()
-													.replace("zamestnancov", "zm.")
-											: "n/a"))
-					.setWidth("4em");
-*/
-		}
-
 		grid.addColumn(ziadatel -> new DecimalFormat("#,###").format(ziadatel.getMaxRozdielVymer(
 				Integer.parseInt(rokOdField.getValue()), Integer.parseInt(rokDoField.getValue()), true)))
-				.setHeader("Nárast").setResizable(true).setSortable(true)
+				.setHeader("Nárast výmery v ha").setResizable(true).setSortable(true)
 				.setComparator((person1, person2) -> person1
 						.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
 								Integer.parseInt(rokDoField.getValue()), true)
 						.compareTo(person2.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
 								Integer.parseInt(rokDoField.getValue()), true)));
 
-		container.add(header, grid);
 
-		add(container);
+		grid.addColumn(ziadatel -> ziadatel.getMaximumLokalit()).setHeader("Počet lokalít").setResizable(true)
+				.setSortable(true)
+				.setComparator(Ziadatel::getMaximumLokalit)
+				.setKey("lokalita");
+
+		createYearColumns();
+	}
+
+	private void createYearColumns() {
+		if("suma hektárov".equals(comboBox.getValue())) {
+			for (int i = from; i <= to; i++) {
+				final int rok = i;
+				grid.addColumn(ziadatel -> ziadatel.getVymeraZaRok(rok)).setHeader(rok + "").setKey(rok + "").setWidth("3em")
+						.setResizable(true);
+			}
+		} else {
+			for (int i = from; i <= to; i++) {
+				final int rok = i;
+				grid.addColumn(ziadatel -> ziadatel.getLokalityZaRok(rok)).setHeader(rok + "").setKey(rok + "").setWidth("3em")
+						.setResizable(true);
+			}
+		}
 	}
 
 	private Button createEditButton(Ziadatel entity) {
@@ -186,4 +184,11 @@ public class ViewZiadateliaList extends VerticalLayout {
 		}
 	}
 
+	private void comboBoxChanged(String value) {
+		for (int i = from; i <= to; i++) {
+			grid.removeColumnByKey(i + "");
+		}
+
+		createYearColumns();
+	}
 }
