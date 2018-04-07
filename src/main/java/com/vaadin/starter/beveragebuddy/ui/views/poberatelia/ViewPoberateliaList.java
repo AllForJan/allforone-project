@@ -21,26 +21,26 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.starter.beveragebuddy.backend.Ziadatel;
 import com.vaadin.starter.beveragebuddy.backend.ZiadostiService;
+import com.vaadin.starter.beveragebuddy.backend.rpvs.PoberatelSumar;
+import com.vaadin.starter.beveragebuddy.backend.rpvs.RpvsService;
 import com.vaadin.starter.beveragebuddy.ui.MainLayout;
 
-@Route(value = "ziadatelia", layout = MainLayout.class)
-@PageTitle("Žiadatelia List")
+@Route(value = "poberatelia", layout = MainLayout.class)
+@PageTitle("Poberatelia List")
 public class ViewPoberateliaList extends VerticalLayout {
 
 	private final TextField searchField = new TextField("", "Search");
 
 	private final TextField rokOdField = new TextField("", "Rok od");
 	private final TextField rokDoField = new TextField("", "Rok do");
-	private final ComboBox<String> comboBox = new ComboBox<>(null, Arrays.asList("suma hektárov", "pocet lokalit"));
+	// private final ComboBox<String> comboBox = new ComboBox<>(null,
+	// Arrays.asList("suma hektárov", "pocet lokalit"));
 
 	private final H2 header = new H2("Poberatelia platieb");
-	private final Grid<Ziadatel> grid = new Grid<>();
+	private final Grid<PoberatelSumar> grid = new Grid<>();
 
-	private final int from = 2004;
-	private final int to = 2017;
-
-	// private final ZiadostiEditorDialog form = new
-	// ZiadostiEditorDialog(this::save, this::delete);
+	int from = 2015;
+	int to = 2016;
 
 	public ViewPoberateliaList() {
 		initView();
@@ -48,8 +48,8 @@ public class ViewPoberateliaList extends VerticalLayout {
 		addSearchBar();
 		addContent();
 
-		rokOdField.setValue("2004");
-		rokDoField.setValue("2017");
+		rokOdField.setValue("2015");
+		rokDoField.setValue("2016");
 		updateView();
 
 	}
@@ -85,12 +85,12 @@ public class ViewPoberateliaList extends VerticalLayout {
 		rokDoField.setPreventInvalidInput(true);
 		rokDoField.setWidth("100px");
 
-		comboBox.setValue("suma hektárov");
-		comboBox.addValueChangeListener((combo) -> {
-			if(!combo.getOldValue().equals(combo.getValue())) {
-				comboBoxChanged(combo.getValue());
-			}
-		});
+		// comboBox.setValue("suma hektárov");
+		// comboBox.addValueChangeListener((combo) -> {
+		// if(!combo.getOldValue().equals(combo.getValue())) {
+		// comboBoxChanged(combo.getValue());
+		// }
+		// });
 
 		// Button newButton = new Button(adaťNew category", new Icon("lumo", "search"));
 		// newButton.getElement().setAttribute("theme", "primary");
@@ -98,10 +98,10 @@ public class ViewPoberateliaList extends VerticalLayout {
 		// newButton.addClickListener(e -> form.open(new Category(),
 		// AbstractEditorDialog.Operation.ADD));
 
-		//viewToolbar.add(searchField, rokOdField, rokDoField,comboBox);
+		// viewToolbar.add(searchField, rokOdField, rokDoField,comboBox);
 		viewToolbar.add(searchField);
 		add(viewToolbar);
-		
+
 	}
 
 	private void addContent() {
@@ -119,55 +119,33 @@ public class ViewPoberateliaList extends VerticalLayout {
 	}
 
 	private void createAllColumns() {
-		grid.addColumn(TemplateRenderer.<Ziadatel>of("<div><b>[[item.name]]</b><br><a target=\"_blank\" href=\"http://www.finstat.sk/[[item.ico]]\">[[item.ico]]</a></div>")
-				.withProperty("name", ziadatel -> ziadatel.getZiadatel())
-				.withProperty("ico", ziadatel -> ziadatel.getIco()))
-				// .withProperty("adr", ziadatel ->
-				// ziadatel.getAdresaString())).setHeader("Žiadateľ").setWidth("12em")
-				.setKey("ziadatel");
 
-
-		grid.addColumn(ziadatel -> new DecimalFormat("#,###").format(ziadatel.getMaxRozdielVymer(
-				Integer.parseInt(rokOdField.getValue()), Integer.parseInt(rokDoField.getValue()))))
-				.setHeader("Nárast výmery v ha").setResizable(true).setSortable(true)
-				.setComparator((person1, person2) -> person1
-						.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
-								Integer.parseInt(rokDoField.getValue()))
-						.compareTo(person2.getMaxRozdielVymer(Integer.parseInt(rokOdField.getValue()),
-								Integer.parseInt(rokDoField.getValue()))));
-
-		grid.addColumn(ziadatel -> new DecimalFormat("#,###").format(ziadatel.getMinRozdielVymer(
-				Integer.parseInt(rokOdField.getValue()), Integer.parseInt(rokDoField.getValue()))))
-				.setHeader("Pokles výmery v ha").setResizable(true).setSortable(true)
-				.setComparator((person1, person2) -> person1
-						.getMinRozdielVymer(Integer.parseInt(rokOdField.getValue()),
-								Integer.parseInt(rokDoField.getValue()))
-						.compareTo(person2.getMinRozdielVymer(Integer.parseInt(rokOdField.getValue()),
-								Integer.parseInt(rokDoField.getValue()))));
-
-
-		grid.addColumn(ziadatel -> ziadatel.getMaximumLokalit()).setHeader("Počet lokalít").setResizable(true)
-				.setSortable(true)
-				.setComparator(Ziadatel::getMaximumLokalit)
-				.setKey("lokalita");
+		grid.addColumn(poberatel -> poberatel.getPoberatel().getName()).setHeader("Pobetateľ").setResizable(true)
+				.setSortable(true).setKey("pobetatel");
+		grid.addColumn(poberatel -> poberatel.getPoberatel().getStreet()).setHeader("Ulica").setResizable(true)
+				.setSortable(true);
+		grid.addColumn(poberatel -> poberatel.getPoberatel().getZipCode()).setHeader("PSČ").setResizable(true)
+				.setSortable(true);
+		grid.addColumn(poberatel -> poberatel.getPoberatel().getCity()).setHeader("Mesto").setResizable(true)
+				.setSortable(true);
+		grid.addColumn(poberatel -> poberatel.getPoberatel().getBirthDate()).setHeader("Dátum Narodenia")
+				.setResizable(true).setSortable(true);
 
 		createYearColumns();
+
+		grid.addColumn(poberatel -> poberatel.getSumaVsetkychPlatieb()).setHeader("Celková suma").setResizable(true)
+				.setSortable(true);
+
 	}
 
 	private void createYearColumns() {
-		if("suma hektárov".equals(comboBox.getValue())) {
-			for (int i = from; i <= to; i++) {
-				final int rok = i;
-				grid.addColumn(ziadatel -> ziadatel.getVymeraZaRok(rok)+(ziadatel.getMaxRok(Integer.parseInt(rokOdField.getValue()), Integer.parseInt(rokDoField.getValue()))==rok?" +":"")+(ziadatel.getMinRok(Integer.parseInt(rokOdField.getValue()), Integer.parseInt(rokDoField.getValue()))==rok?" -":"")).setHeader(rok + "").setKey(rok + "").setWidth("3em")
-						.setResizable(true);
-			}
-		} else {
-			for (int i = from; i <= to; i++) {
-				final int rok = i;
-				grid.addColumn(ziadatel -> ziadatel.getLokalityZaRok(rok)).setHeader(rok + "").setKey(rok + "").setWidth("3em")
-						.setResizable(true);
-			}
+		for (int i = from; i <= to; i++) {
+			final int rok = i;
+			grid.addColumn(ziadatel -> ziadatel.getSumaVsetkychPlatieb(rok)			
+					.setHeader(rok + "").setKey(rok + "").setWidth("3em").setResizable(true);
+			
 		}
+
 	}
 
 	private Button createEditButton(Ziadatel entity) {
@@ -181,18 +159,17 @@ public class ViewPoberateliaList extends VerticalLayout {
 
 	private void updateView() {
 		if (!StringUtils.isEmpty(rokDoField.getValue()) && !StringUtils.isEmpty(rokOdField.getValue())) {
-			List<Ziadatel> list = ZiadostiService.getInstance().findZiadatelov(searchField.getValue(),
+			List<PoberatelSumar> list = RpvsService.getInstance().findPoberatelov(searchField.getValue(),
 					Integer.parseInt(rokOdField.getValue()), Integer.parseInt(rokDoField.getValue()));
-			
+
 			grid.setItems(list);
 
 			if (searchField.getValue().length() > 0) {
 				header.setText("Search for “" + searchField.getValue() + "”");
 			} else {
-				header.setText("Žiadatelia");
+				header.setText("Poberatelia");
 			}
-			grid.getColumnByKey("ziadatel").setFooter("" + list.size()).setHeader("Žiadateľ");
-
+			grid.getColumnByKey("poberatel").setFooter("" + list.size()).setHeader("Poberateľ");
 		}
 	}
 
