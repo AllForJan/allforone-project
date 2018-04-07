@@ -68,6 +68,7 @@ public class Ziadatel implements Serializable {
 
 		BigDecimal max = new BigDecimal(0);
 		BigDecimal rozdiel;
+		maxRok = rokStart;
 
 		for (int i = rokStart; i < rokEnd; i++) {
 			rozdiel = getVymeraZaRok(i + 1).subtract(getVymeraZaRok(i));
@@ -76,13 +77,13 @@ public class Ziadatel implements Serializable {
 				maxRok = i;
 			}
 		}
-
 		return max;
 	}
 
 	public BigDecimal getMinRozdielVymer(int rokStart, int rokEnd) {
 		BigDecimal min = new BigDecimal(10000000);
 		BigDecimal rozdiel;
+		minRok = rokStart;
 
 		for (int i = rokStart; i < rokEnd; i++) {
 			rozdiel = getVymeraZaRok(i + 1).subtract(getVymeraZaRok(i));
