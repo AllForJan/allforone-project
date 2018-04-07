@@ -1,13 +1,9 @@
 package com.vaadin.starter.beveragebuddy.backend.rpvs;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +31,7 @@ public class RpvsService {
 			Map<String, List<PoberatelVyhod>> json = new HashMap<>();
 			final ObjectMapper mapper = new ObjectMapper();
 			try {
+				System.out.println("Loading RPVS data");
 				json = mapper.readValue(new File("data/rpvs_2018-04-07.json"),
 						new TypeReference<Map<String, List<PoberatelVyhod>>>() {
 						});
@@ -57,6 +54,7 @@ public class RpvsService {
 			}
 
 			// List<PoberatelSumar> poberateliaCelkovo = new ArrayList<>();
+			System.out.println("Normalizing RPVS data");
 			for (PoberatelVyhod poberatel : poberateloveFirmy.keySet()) {
 				PoberatelSumar sumar = new PoberatelSumar();
 				sumar.setPoberatel(poberatel);
@@ -72,11 +70,29 @@ public class RpvsService {
 					platbyFirme.setNazov(ziadatel.getZiadatel());
 					sumar.getPlatbyFirmam().add(platbyFirme);
 				}
+				sumar.initializeSumaVsetkychPlatieb();
 				service.getPoberateliaSumar().add(sumar);
 			}
 
-		
+/*			service.getPoberateliaSumar().sort(Comparator.comparing(PoberatelSumar::getSumaVsetkychPlatieb));
 
+			try (Writer out = new OutputStreamWriter(new FileOutputStream("data/poberatelia.txt"), "UTF8")) {
+				for (PoberatelSumar sumar : service.getPoberateliaSumar()) {
+					out.write(sumar.getPoberatel().toString() + "\t" + sumar.getSumaVsetkychPlatieb() + " EUR\n"
+							+ poberateloveFirmy.get(sumar.getPoberatel()) + "\n");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			try (Writer out = new OutputStreamWriter(new FileOutputStream("data/ico_nazvy.txt"), "UTF8")) {
+				for (Ziadatel z : ZiadostiService.getInstance().findZiadatelov(null, 0, 0)) {
+					out.write(z.getIco() + "\t" + z.getDalsieNazvy() + "\n");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+*/
 			return service;
 		}
 	}

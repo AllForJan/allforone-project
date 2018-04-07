@@ -24,6 +24,7 @@ public class ZiadostiService {
 			boolean firstLine = true;
 			int lineNr = 0;
 			try (Scanner finstatScanner = new Scanner(new File("data/finstat.csv"), "UTF-8")) {
+				System.out.println("Loading FinStat data");
 				while (finstatScanner.hasNextLine()) {
 					if (firstLine) {
 						finstatScanner.nextLine();
@@ -86,6 +87,7 @@ public class ZiadostiService {
 				// while (scanner.hasNext()) {
 				// System.out.println(scanner.nextLine());
 				// }
+				System.out.println("Loading parts data");
 				int i = 0;
 				while (scanner.hasNextLine()) {
 					i++;
@@ -139,6 +141,7 @@ public class ZiadostiService {
 		private static void nacitajPriamePlatby(ZiadostiService service) {
 			int i = 0;
 			try {
+				System.out.println("Loading payments data");
 				// URL;Meno;PSC;Obec;Opatrenie;Opatrenie - Kod;Suma;Rok
 				Scanner scanner = new Scanner(new File("c:/tmp/dataFIIT/apa_prijimatelia_2018-03-15.csv"), "UTF-8");
 
