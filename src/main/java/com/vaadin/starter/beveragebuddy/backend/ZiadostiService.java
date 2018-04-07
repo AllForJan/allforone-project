@@ -283,12 +283,18 @@ public class ZiadostiService {
 		Set<String> mena = new HashSet<>();
 		mena.add(ziadatel.getZiadatel());
 		mena.addAll(ziadatel.getDalsieNazvy());
+		List<PriamaPlatba> filtered = new ArrayList<>();
 
-		return listPriamychPlatieb.values().stream()
-				.filter(platba -> mena.contains(platba.getZiadatel()) && platba.getPsc() != null
-						? platba.getPsc().equals((ziadatel.getFinstatData()!=null?ziadatel.getFinstatData().getPsc():"")): true)
-				.collect(Collectors.toList());
-
+		for (PriamaPlatba priamaPlatba : listPriamychPlatieb.values()) {
+			if(mena.contains(priamaPlatba.getZiadatel())) {
+				if(priamaPlatba.getPsc() == null || ziadatel.getFinstatData() == null) {
+					filtered.add(priamaPlatba);
+				} else if(priamaPlatba.getPsc().equals(ziadatel.getFinstatData().getPsc())) {
+					filtered.add(priamaPlatba);
+				}
+			}
+		}
+		return filtered;
 	}
 	
 	
