@@ -123,6 +123,7 @@ public class ViewZiadateliaList extends VerticalLayout {
 				.withProperty("ico", ziadatel -> ziadatel.getIco()))
 				// .withProperty("adr", ziadatel ->
 				// ziadatel.getAdresaString())).setHeader("Žiadateľ").setWidth("12em")
+				.setResizable(true)
 				.setKey("ziadatel");
 
 
