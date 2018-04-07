@@ -3,11 +3,7 @@ package com.vaadin.starter.beveragebuddy.backend;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -282,10 +278,14 @@ public class ZiadostiService {
 		}
 	}
 
-	public List<PriamaPlatba> findPriamaPlatba(String name, String psc) {
-		return listPriamychPlatieb.values().stream()
-				.filter(platba -> platba.getZiadatel().contains(name)
-						&& platba.getPsc().replace(" ", "").equals(psc.replace(" ", "")))
+	public List<PriamaPlatba> findPriamaPlatba(Ziadatel ziadatel) {
+		Set<String> mena = new HashSet<>();
+		mena.add(ziadatel.getZiadatel());
+		mena.addAll(ziadatel.getDalsieNazvy());
+
+ 		return listPriamychPlatieb.values().stream()
+				.filter(platba -> mena.contains(platba.getZiadatel())
+						&& platba.getPsc().replace(" ", "").equals(ziadatel.getFinstatData().getPsc().replace(" ", "")))
 				.sorted((r1, r2) -> r2.getId().compareTo(r1.getId())).collect(Collectors.toList());
 
 	}
