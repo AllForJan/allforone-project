@@ -127,18 +127,6 @@ public class ViewZiadateliaList extends VerticalLayout {
 				Integer.parseInt(rokDoField.getValue()), true)).setHeader("Indikátok výmer").setResizable(true)
 				.setSortable(true);
 
-		grid.addColumn(new ComponentRenderer<>(ziadatel ->
-
-		{
-
-			if (ziadatel.getMaxRozdielVymer() != null) {
-				return new Icon(VaadinIcons.CIRCLE);
-
-			} else {
-				return new Icon(VaadinIcons.CIRCLE);
-			}
-		})).setHeader("");
-
 		container.add(header, grid);
 
 		add(container);
