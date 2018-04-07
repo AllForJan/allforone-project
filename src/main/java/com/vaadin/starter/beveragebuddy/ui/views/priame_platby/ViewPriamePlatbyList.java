@@ -14,6 +14,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.starter.beveragebuddy.backend.PriamaPlatba;
 import com.vaadin.starter.beveragebuddy.backend.ZiadostiService;
+import com.vaadin.starter.beveragebuddy.backend.rpvs.RpvsService;
 import com.vaadin.starter.beveragebuddy.ui.MainLayout;
 
 import java.util.List;
@@ -38,6 +39,8 @@ public class ViewPriamePlatbyList extends VerticalLayout {
     private void initView() {
         addClassName("categories-list");
         setDefaultHorizontalComponentAlignment(FlexComponent.Alignment.STRETCH);
+        
+        RpvsService.getInstance();
     }
 
     private void addSearchBar() {
