@@ -153,7 +153,8 @@ public class ZiadostiService {
 						PriamaPlatba pp = new PriamaPlatba();
 						pp.setUrl(fields[0]);
 						pp.setZiadatel(fields[1]);
-						pp.setPsc(fields[2]);
+						String psc = fields[2].replace(" ", "");
+						pp.setPsc(StringUtils.leftPad(psc, 5, "0"));
 						pp.setObec(fields[3]);
 						pp.setOpatrenie(fields[4]);
 						pp.setKodOpatrenia(fields[5]);
