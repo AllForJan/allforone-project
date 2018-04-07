@@ -2,9 +2,7 @@ package com.vaadin.starter.beveragebuddy.backend;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,8 +28,14 @@ public class Ziadatel implements Serializable {
     private int maxRok;
 
     private BigDecimal[] roky = new BigDecimal[20];
+    private Map<Integer, Integer> lokality = new HashMap<>();
 
     private List<ZiadostDiely> listZiadostDiely = new ArrayList<>();
+
+    public int getLokalityZaRok(int rok) {
+    	return 0;
+	}
+
 
     public BigDecimal getVymeraZaRok(int rok){
         if (roky[rok-2000] == null) {
