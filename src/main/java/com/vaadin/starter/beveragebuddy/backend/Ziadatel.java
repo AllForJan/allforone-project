@@ -25,6 +25,8 @@ public class Ziadatel implements Serializable {
     private Long id;
     private String ziadatel;
     private String ico;
+    
+    private BigDecimal rozdielVymer; 
 
     private BigDecimal[] roky = new BigDecimal[20];
 
