@@ -51,6 +51,22 @@ public class Ziadatel implements Serializable {
 		}
 	}
 
+	public String getDalsNazvy(){
+		String returnStr = "";
+		int i = 0;
+		for (String nazov:dalsieNazvy){
+			if (!nazov.equalsIgnoreCase(ziadatel)){
+				i++;
+				if (i==1){
+					returnStr = nazov;
+				} else {
+					returnStr = returnStr + "," + nazov;
+				}
+			}
+		}
+		return returnStr;
+	}
+
 	public BigDecimal getVymeraZaRok(int rok) {
 		if (roky[rok - 2000] == null) {
 			BigDecimal vymera = new BigDecimal(0);

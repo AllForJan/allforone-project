@@ -71,7 +71,7 @@ public class ViewZiadateliaList extends VerticalLayout {
 		rokOdField.setPrefixComponent(new Icon("lumo", "Od"));
 		rokOdField.addClassName("view-toolbar__search-field");
 		rokOdField.addValueChangeListener(e -> updateView());
-		rokOdField.setValueChangeMode(ValueChangeMode.EAGER);
+		rokOdField.setValueChangeMode(ValueChangeMode.ON_CHANGE);
 
 		rokOdField.setPattern("[0-9]*");
 		rokOdField.setPreventInvalidInput(true);
@@ -80,7 +80,7 @@ public class ViewZiadateliaList extends VerticalLayout {
 		rokDoField.setPrefixComponent(new Icon("lumo", "Do"));
 		rokDoField.addClassName("view-toolbar__search-field");
 		rokDoField.addValueChangeListener(e -> updateView());
-		rokDoField.setValueChangeMode(ValueChangeMode.EAGER);
+		rokDoField.setValueChangeMode(ValueChangeMode.ON_CHANGE);
 		rokDoField.setPattern("[0-9]*");
 		rokDoField.setPreventInvalidInput(true);
 		rokDoField.setWidth("100px");
@@ -118,9 +118,10 @@ public class ViewZiadateliaList extends VerticalLayout {
 	}
 
 	private void createAllColumns() {
-		grid.addColumn(TemplateRenderer.<Ziadatel>of("<div><b>[[item.name]]</b><br><a target=\"_blank\" href=\"http://www.finstat.sk/[[item.ico]]\">[[item.ico]]</a></div>")
+		grid.addColumn(TemplateRenderer.<Ziadatel>of("<div><b>[[item.name]]</b><br><a target=\"_blank\" href=\"http://www.finstat.sk/[[item.ico]]\">[[item.ico]]</a><br>[[item.nazvy]]</div>")
 				.withProperty("name", ziadatel -> ziadatel.getZiadatel())
-				.withProperty("ico", ziadatel -> ziadatel.getIco()))
+				.withProperty("ico", ziadatel -> ziadatel.getIco())
+				.withProperty("nazvy", ziadatel -> ziadatel.getDalsNazvy()))
 				// .withProperty("adr", ziadatel ->
 				// ziadatel.getAdresaString())).setHeader("Žiadateľ").setWidth("12em")
 				.setResizable(true)
